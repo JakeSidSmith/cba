@@ -1,0 +1,47 @@
+{
+  "name": "cba",
+  "version": "0.0.0",
+  "description": "Currently being assembled...",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "dist": "rm -rf dist && tsc --project tsconfig.dist.json",
+    "start": "budo examples/src/index.ts:build/bundle.js --dir examples --live -- -p [tsify -p tsconfig.examples.json]",
+    "typecheck": "tsc --project tsconfig.json --noEmit",
+    "prettier": "prettier --write '**/*.{ts,tsx,js,jsx}'",
+    "prettier-check": "prettier --check '**/*.{ts,tsx,js,jsx}'",
+    "lint": "npm run prettier-check && tslint --project tsconfig.json",
+    "tests": "jest",
+    "test": "npm run lint && npm run typecheck && npm run tests -- --runInBand --coverage",
+    "prepublishOnly": "npm run dist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jakesidsmith/cba.git"
+  },
+  "keywords": [
+    "cba"
+  ],
+  "author": "Jake 'Sid' Smith",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jakesidsmith/cba/issues"
+  },
+  "homepage": "https://github.com/jakesidsmith/cba#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "@types/jest": "^24.0.13",
+    "budo": "^11.6.2",
+    "jest": "^24.8.0",
+    "prettier": "^1.17.1",
+    "ts-jest": "^24.0.2",
+    "tsify": "^4.0.1",
+    "tslint": "^5.16.0",
+    "tslint-config-prettier": "^1.18.0",
+    "tslint-eslint-rules": "^5.4.0",
+    "typescript": "^3.3.4000"
+  },
+  "browser": {
+    "cba": "./src"
+  }
+}
