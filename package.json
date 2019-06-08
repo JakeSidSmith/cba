@@ -6,7 +6,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "dist": "rm -rf dist && tsc --project tsconfig.dist.json",
-    "start": "budo examples/src/index.ts:build/bundle.js --dir examples --live -- -p [tsify -p tsconfig.examples.json]",
+    "start": "budo examples/src/index.tsx:build/bundle.js --dir examples --live -- -p [tsify -p tsconfig.examples.json]",
     "typecheck": "tsc --project tsconfig.json --noEmit",
     "prettier": "prettier --write '**/*.{ts,tsx,js,jsx}'",
     "prettier-check": "prettier --check '**/*.{ts,tsx,js,jsx}'",
