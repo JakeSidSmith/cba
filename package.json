@@ -28,7 +28,9 @@
     "url": "https://github.com/jakesidsmith/cba/issues"
   },
   "homepage": "https://github.com/jakesidsmith/cba#readme",
-  "dependencies": {},
+  "dependencies": {
+    "canvasimo": "^0.8.0"
+  },
   "devDependencies": {
     "@types/jest": "^24.0.13",
     "budo": "^11.6.2",
