@@ -1,7 +1,7 @@
 {
   "name": "cba",
   "version": "0.0.0",
-  "description": "Currently being assembled...",
+  "description": "A React-like, component based library for drawing to HTML5 canvas with Canvasimo",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
