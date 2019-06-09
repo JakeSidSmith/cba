@@ -1,7 +1,7 @@
 import Canvasimo from 'canvasimo';
 import { Canvas } from './canvas';
 import { drawTree } from './draw-tree';
-import { Element, Injected, Node } from './types';
+import { Element, Injected, Node, SetStateCallback } from './types';
 import { isElementArray, isNodeArray } from './utils';
 
 function destroyRendered<P = {}, S = {}>(
@@ -136,7 +136,7 @@ function mountTree<P = {}, S = {}>(
     onUpdate: undefined,
     injected: {
       canvas,
-      setState: (state: Partial<S> | ((state: Partial<S>) => Partial<S>)) => {
+      setState: state => {
         const nextState =
           typeof state === 'function' ? state(element.props) : state;
         element.props = { ...node.previousProps, ...nextState };
