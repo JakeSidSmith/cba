@@ -7,33 +7,45 @@ interface RectProps {
   y: number;
   width: number;
   height: number;
+  rotation?: number;
   fill: string;
 }
 
 interface DynamicRectState {
-  scale: number;
+  rotation: number;
 }
 
 const Rect: Component<RectProps> = (
-  { x, y, width, height, fill, children },
+  { x, y, width, height, fill, rotation = 0, children },
   { canvas }
 ) => {
-  canvas.fillRect(x, y, width, height, fill);
+  const size = canvas.getSize();
+
+  canvas
+    .translate(size.width / 2, size.height / 2)
+    .rotate(rotation)
+    .fillRect(x - size.width / 2, y - size.height / 2, width, height, fill);
+
   return children;
 };
 
 const DynamicRect: Component<RectProps, DynamicRectState> = (
-  { x, y, width, height, fill, children, scale = 1 },
-  { setState }
+  { x, y, width, height, fill, children, rotation = 0 },
+  { canvas, setState }
 ) => {
-  if (scale === 1) {
-    setTimeout(() => {
-      setState({ scale: 0.5 });
-    }, 1000);
-  }
+  window.requestAnimationFrame(() => {
+    setState({ rotation: rotation + canvas.getRadiansFromDegrees(1) });
+  });
 
   return (
-    <Rect x={x} y={y} width={width * scale} height={height * scale} fill={fill}>
+    <Rect
+      x={x}
+      y={y}
+      width={width}
+      height={height}
+      fill={fill}
+      rotation={rotation}
+    >
       {children}
     </Rect>
   );
