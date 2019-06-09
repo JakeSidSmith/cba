@@ -103,8 +103,10 @@ const PointerCircle: Component<{}, PointerCircleState> = (
   return children;
 };
 
+const DENSITY = window.devicePixelRatio >= 2 ? 2 : 1;
+
 const App: Component = () => (
-  <Canvas width={300} height={300} density={2}>
+  <Canvas width={300} height={300} density={DENSITY}>
     <Rect x={10} y={10} width={280} height={280} fill="black">
       <Rect x={20} y={20} width={260} height={260} fill="red" />
     </Rect>
