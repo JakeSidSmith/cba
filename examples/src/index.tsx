@@ -15,17 +15,14 @@ interface DynamicRectState {
   rotation: number;
 }
 
-interface TranslateProps {
-  x: number;
-  y: number;
-}
-
 interface PointerCircleState {
   x: number;
   y: number;
 }
 
-interface RotateProps {
+interface TranslateAroundProps {
+  x: number;
+  y: number;
   rotation: number;
 }
 
@@ -38,21 +35,13 @@ const Rect: Component<RectProps> = (
   return children;
 };
 
-const Translate: Component<TranslateProps> = (
-  { x, y, children },
+const TranslateAround: Component<TranslateAroundProps> = (
+  { x, y, rotation, children },
   { addChildTransform }
 ) => {
   addChildTransform((canvas: Canvasimo) => {
     canvas.translate(x, y);
   });
-
-  return children;
-};
-
-const Rotate: Component<RotateProps> = (
-  { rotation, children },
-  { addChildTransform }
-) => {
   addChildTransform((canvas: Canvasimo) => {
     canvas.rotate(rotation);
   });
@@ -76,19 +65,17 @@ const DynamicRect: Component<RectProps, DynamicRectState> = (
   const size = canvas.getSize();
 
   return (
-    <Translate x={size.width / 2} y={size.height / 2}>
-      <Rotate rotation={rotation}>
-        <Rect
-          x={x - size.width / 2}
-          y={y - size.height / 2}
-          width={width}
-          height={height}
-          fill={fill}
-        >
-          {children}
-        </Rect>
-      </Rotate>
-    </Translate>
+    <TranslateAround x={size.width / 2} y={size.height / 2} rotation={rotation}>
+      <Rect
+        x={x - size.width / 2}
+        y={y - size.height / 2}
+        width={width}
+        height={height}
+        fill={fill}
+      >
+        {children}
+      </Rect>
+    </TranslateAround>
   );
 };
 
