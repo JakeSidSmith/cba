@@ -84,11 +84,11 @@ const PointerCircle: Component<{}, PointerCircleState> = (
   { canvas, onCreation, setState }
 ) => {
   onCreation(() => {
-    const rect = (document.getElementById(
-      'app'
-    ) as HTMLElement).getBoundingClientRect();
-
     const onMouseMove = (event: MouseEvent) => {
+      const rect = (document.getElementById(
+        'app'
+      ) as HTMLElement).getBoundingClientRect();
+
       setState({
         x: event.clientX - rect.left,
         y: event.clientY - rect.top,
