@@ -40,10 +40,10 @@ const TranslateAround: Component<TranslateAroundProps> = (
   { addChildTransform }
 ) => {
   addChildTransform((canvas: Canvasimo) => {
-    canvas.translate(x, y);
-  });
-  addChildTransform((canvas: Canvasimo) => {
-    canvas.rotate(rotation);
+    canvas
+      .translate(x, y)
+      .rotate(rotation)
+      .translate(-x, -y);
   });
 
   return children;
@@ -66,13 +66,7 @@ const DynamicRect: Component<RectProps, DynamicRectState> = (
 
   return (
     <TranslateAround x={size.width / 2} y={size.height / 2} rotation={rotation}>
-      <Rect
-        x={x - size.width / 2}
-        y={y - size.height / 2}
-        width={width}
-        height={height}
-        fill={fill}
-      >
+      <Rect x={x} y={y} width={width} height={height} fill={fill}>
         {children}
       </Rect>
     </TranslateAround>
