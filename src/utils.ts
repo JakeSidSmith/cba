@@ -1,7 +1,7 @@
 import { Element, Node } from './types';
 
-export const isNodeArray = <P = {}>(
-  node: Node<P> | ReadonlyArray<Node> | undefined
+export const isNodeArray = <P = {}, S = {}>(
+  node: Node<P, S> | ReadonlyArray<Node> | undefined
 ): node is ReadonlyArray<Node> => Array.isArray(node);
 
 export const isElementArray = <P = {}>(

@@ -4,6 +4,20 @@ import { drawTree } from './draw-tree';
 import { Element, Injected, Node } from './types';
 import { isElementArray, isNodeArray } from './utils';
 
+function destroyRendered<P = {}, S = {}>(
+  rendered: Node<P, S> | ReadonlyArray<Node> | undefined
+): void {
+  if (!rendered) {
+    return;
+  }
+
+  if (isNodeArray(rendered)) {
+    rendered.forEach(destroyRendered);
+  } else if (rendered.onDestroy) {
+    rendered.onDestroy();
+  }
+}
+
 export function updateTree<P = {}, S = {}>(
   next: Element<P, S>,
   prev: Node<P, S>,
@@ -19,10 +33,10 @@ export function updateTree<P = {}, S = {}>(
 
     if (isElementArray(rendered)) {
       if (!isNodeArray(prev.rendered)) {
-        prev.rendered = rendered.map((child, _index) => {
-          // unmountRendered(
-          //   (prev.rendered as ReadonlyArray<Node | undefined>)[index]
-          // );
+        prev.rendered = rendered.map((child, index) => {
+          destroyRendered(
+            (prev.rendered as ReadonlyArray<Node | undefined>)[index]
+          );
 
           return mountTree(child, rootCanvas, reRender);
         });
@@ -41,7 +55,7 @@ export function updateTree<P = {}, S = {}>(
       }
     } else if (rendered) {
       if (isNodeArray(prev.rendered) || !prev.rendered) {
-        // unmountRendered(prev.rendered);
+        destroyRendered(prev.rendered);
 
         prev.rendered = mountTree(rendered, rootCanvas, reRender);
       } else {
@@ -53,13 +67,21 @@ export function updateTree<P = {}, S = {}>(
         );
       }
     } else {
-      // unmountRendered(prev.rendered);
+      destroyRendered(prev.rendered);
       prev.rendered = undefined;
+    }
+
+    if (prev.onUpdate) {
+      window.requestAnimationFrame(() => {
+        if (prev.onUpdate) {
+          prev.onUpdate(prev.previousProps);
+        }
+      });
     }
 
     return prev;
   } else {
-    // unmountRendered(prev);
+    destroyRendered(prev);
 
     return mountTree(next, rootCanvas, reRender);
   }
@@ -67,7 +89,7 @@ export function updateTree<P = {}, S = {}>(
 
 function renderAndMount<P = {}, S = {}>(
   element: Element<P, S>,
-  injected: Injected<S>,
+  injected: Injected<P, S>,
   rootCanvas: Canvasimo,
   reRender: () => void
 ): Node | ReadonlyArray<Node> | undefined {
@@ -109,18 +131,47 @@ function mountTree<P = {}, S = {}>(
     type: element.type,
     previousProps: { ...element.props },
     rendered: undefined,
+    onCreation: undefined,
+    onDestroy: undefined,
+    onUpdate: undefined,
     injected: {
       canvas,
-      setState: (state: Partial<S>) => {
-        element.props = { ...node.previousProps, ...state };
+      setState: (state: Partial<S> | ((state: Partial<S>) => Partial<S>)) => {
+        const nextState =
+          typeof state === 'function' ? state(element.props) : state;
+        element.props = { ...node.previousProps, ...nextState };
 
         updateTree(element, node, rootCanvas, reRender);
         reRender();
+
+        node.previousProps = element.props;
+      },
+      onCreation: onCreation => {
+        if (!node.onCreation) {
+          node.onCreation = onCreation;
+        }
+      },
+      onUpdate: onUpdate => {
+        if (!node.onUpdate) {
+          node.onUpdate = onUpdate;
+        }
       },
     },
   };
 
   node.rendered = renderAndMount(element, node.injected, rootCanvas, reRender);
+
+  if (node.onCreation) {
+    window.requestAnimationFrame(() => {
+      if (node.onCreation) {
+        const onDestroy = node.onCreation();
+
+        if (onDestroy && !node.onDestroy) {
+          node.onDestroy = onDestroy;
+        }
+      }
+    });
+  }
 
   return node;
 }

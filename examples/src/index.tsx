@@ -31,11 +31,16 @@ const Rect: Component<RectProps> = (
 
 const DynamicRect: Component<RectProps, DynamicRectState> = (
   { x, y, width, height, fill, children, rotation = 0 },
-  { canvas, setState }
+  { canvas, setState, onCreation, onUpdate }
 ) => {
-  window.requestAnimationFrame(() => {
-    setState({ rotation: rotation + canvas.getRadiansFromDegrees(1) });
-  });
+  const onChange = () => {
+    setState(state => ({
+      rotation: (state.rotation || 0) + canvas.getRadiansFromDegrees(1),
+    }));
+  };
+
+  onCreation(onChange);
+  onUpdate(onChange);
 
   return (
     <Rect
