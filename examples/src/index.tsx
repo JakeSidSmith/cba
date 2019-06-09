@@ -56,12 +56,48 @@ const DynamicRect: Component<RectProps, DynamicRectState> = (
   );
 };
 
+interface PointerCircleState {
+  x: number;
+  y: number;
+}
+
+const PointerCircle: Component<{}, PointerCircleState> = (
+  { children, x, y },
+  { canvas, onCreation, setState }
+) => {
+  onCreation(() => {
+    const rect = (document.getElementById(
+      'app'
+    ) as HTMLElement).getBoundingClientRect();
+
+    const onMouseMove = (event: MouseEvent) => {
+      setState({
+        x: event.clientX - rect.left,
+        y: event.clientY - rect.top,
+      });
+    };
+
+    window.addEventListener('mousemove', onMouseMove);
+
+    return () => {
+      window.removeEventListener('mousemove', onMouseMove);
+    };
+  });
+
+  if (typeof x === 'number' && typeof y === 'number') {
+    canvas.fillCircle(x, y, 10, false, 'green');
+  }
+
+  return children;
+};
+
 const App: Component = () => (
   <Canvas width={300} height={300} density={2}>
     <Rect x={10} y={10} width={280} height={280} fill="black">
       <Rect x={20} y={20} width={260} height={260} fill="red" />
     </Rect>
     <DynamicRect x={50} y={50} width={200} height={200} fill="cyan" />
+    <PointerCircle />
   </Canvas>
 );
 
