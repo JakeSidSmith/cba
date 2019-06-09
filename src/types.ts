@@ -1,6 +1,8 @@
 import Canvasimo from 'canvasimo';
 
-export type WithChildren<P> = P & { children?: ReadonlyArray<Element> };
+export type WithChildren<P> = P & {
+  children?: ReadonlyArray<Element>;
+};
 
 export type SetStateCallback<S = {}> = (state: Partial<S>) => Partial<S>;
 export type SetState<S = {}> = (
@@ -41,4 +43,14 @@ export interface Node<P = {}, S = {}> {
   onDestroy: OnDestroyCallback | undefined;
   onUpdate: OnUpdateCallback<P, S> | undefined;
   childTransforms: ChildTransform[];
+}
+
+export type ContextStoreSubscriber<C = {}> = (context: C) => void;
+export type ContextStoreUnSubscriber = () => void;
+
+export interface ContextStore<C = {}> {
+  subscribers: Array<ContextStoreSubscriber<C>>;
+  subscribe: (callback: ContextStoreSubscriber<C>) => ContextStoreUnSubscriber;
+  setContext: (newContext: C) => void;
+  getContext: () => C;
 }

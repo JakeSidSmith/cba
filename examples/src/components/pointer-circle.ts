@@ -6,7 +6,7 @@ export interface PointerCircleState {
 }
 
 const PointerCircle: Component<{}, PointerCircleState> = (
-  { children, x, y },
+  { x, y },
   { canvas, onCreation, setState }
 ) => {
   onCreation(() => {
@@ -32,7 +32,7 @@ const PointerCircle: Component<{}, PointerCircleState> = (
     canvas.fillCircle(x, y, 10, false, 'green');
   }
 
-  return children;
+  return undefined;
 };
 
 export { PointerCircle };
