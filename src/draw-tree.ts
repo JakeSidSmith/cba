@@ -1,14 +1,10 @@
 import Canvasimo from 'canvasimo';
 import { Node } from './types';
-
-const isNodeArray = <P = {}>(
-  node: Node<P> | ReadonlyArray<Node> | undefined
-): node is ReadonlyArray<Node> => Array.isArray(node);
+import { isNodeArray } from './utils';
 
 export function drawTree<P = {}>(node: Node<P>, canvas: Canvasimo): void {
-  if (node.canvasElement) {
-    canvas.drawImage(node.canvasElement, 0, 0);
-  }
+  const element = node.injected.canvas.getElement();
+  canvas.drawImage(element, 0, 0);
 
   if (isNodeArray(node.rendered)) {
     node.rendered.forEach(child => drawTree(child, canvas));

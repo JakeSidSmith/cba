@@ -2,20 +2,24 @@ import Canvasimo from 'canvasimo';
 
 export type WithChildren<P> = P & { children?: ReadonlyArray<Element> };
 
-export type Component<P = {}> = ((
-  props: WithChildren<P>,
-  injected: { canvas: Canvasimo }
-) => Element | ReadonlyArray<Element> | undefined) & { name?: string };
-
-export interface Element<P = {}> {
-  type: Component<P>;
-  props: WithChildren<P>;
+export interface Injected<S> {
+  canvas: Canvasimo;
+  setState: (state: Partial<S>) => void;
 }
 
-export interface Node<P = {}> {
-  type: Component<P>;
-  canvasElement?: HTMLCanvasElement;
-  canvas?: Canvasimo;
-  previousProps: P;
+export type Component<P = {}, S = {}> = ((
+  props: WithChildren<P & Partial<S>>,
+  injected: Injected<S>
+) => Element | ReadonlyArray<Element> | undefined) & { name?: string };
+
+export interface Element<P = {}, S = {}> {
+  type: Component<P, S>;
+  props: WithChildren<P & Partial<S>>;
+}
+
+export interface Node<P = {}, S = {}> {
+  type: Component<P, S>;
+  previousProps: P & Partial<S>;
   rendered: Node | ReadonlyArray<Node> | undefined;
+  injected: Injected<S>;
 }
