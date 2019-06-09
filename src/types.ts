@@ -3,11 +3,15 @@ import Canvasimo from 'canvasimo';
 export type WithChildren<P> = P & { children?: ReadonlyArray<Element> };
 
 export type SetStateCallback<S = {}> = (state: Partial<S>) => Partial<S>;
-export type SetState<S = {}> = (state: Partial<S> | SetStateCallback<S>) => void;;
+export type SetState<S = {}> = (
+  state: Partial<S> | SetStateCallback<S>
+) => void;
 
 export type OnDestroyCallback = () => void;
 export type OnCreationCallback = () => void | OnDestroyCallback;
-export type OnUpdateCallback<P = {}, S = {}> = (prevProps: P & Partial<S>) => void;
+export type OnUpdateCallback<P = {}, S = {}> = (
+  prevProps: P & Partial<S>
+) => void;
 export type ChildTransform = (canvas: Canvasimo) => void;
 
 export interface Injected<P = {}, S = {}> {
@@ -29,7 +33,7 @@ export interface Element<P = {}, S = {}> {
 }
 
 export interface Node<P = {}, S = {}> {
-  type: Component<P, S>;
+  element: Element<P, S>;
   previousProps: P & Partial<S>;
   rendered: Node | ReadonlyArray<Node> | undefined;
   injected: Injected<P, S>;

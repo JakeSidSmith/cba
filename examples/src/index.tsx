@@ -1,5 +1,6 @@
 /* @jsx cba.createElement */
 
+import Canvasimo from 'canvasimo';
 import cba, { Canvas, Component, render } from 'cba';
 
 interface RectProps {
@@ -7,7 +8,6 @@ interface RectProps {
   y: number;
   width: number;
   height: number;
-  rotation?: number;
   fill: string;
 }
 
@@ -15,16 +15,47 @@ interface DynamicRectState {
   rotation: number;
 }
 
+interface TranslateProps {
+  x: number;
+  y: number;
+}
+
+interface PointerCircleState {
+  x: number;
+  y: number;
+}
+
+interface RotateProps {
+  rotation: number;
+}
+
 const Rect: Component<RectProps> = (
-  { x, y, width, height, fill, rotation = 0, children },
+  { x, y, width, height, fill, children },
   { canvas }
 ) => {
-  const size = canvas.getSize();
+  canvas.fillRect(x, y, width, height, fill);
 
-  canvas
-    .translate(size.width / 2, size.height / 2)
-    .rotate(rotation)
-    .fillRect(x - size.width / 2, y - size.height / 2, width, height, fill);
+  return children;
+};
+
+const Translate: Component<TranslateProps> = (
+  { x, y, children },
+  { addChildTransform }
+) => {
+  addChildTransform((canvas: Canvasimo) => {
+    canvas.translate(x, y);
+  });
+
+  return children;
+};
+
+const Rotate: Component<RotateProps> = (
+  { rotation, children },
+  { addChildTransform }
+) => {
+  addChildTransform((canvas: Canvasimo) => {
+    canvas.rotate(rotation);
+  });
 
   return children;
 };
@@ -42,24 +73,24 @@ const DynamicRect: Component<RectProps, DynamicRectState> = (
   onCreation(onChange);
   onUpdate(onChange);
 
+  const size = canvas.getSize();
+
   return (
-    <Rect
-      x={x}
-      y={y}
-      width={width}
-      height={height}
-      fill={fill}
-      rotation={rotation}
-    >
-      {children}
-    </Rect>
+    <Translate x={size.width / 2} y={size.height / 2}>
+      <Rotate rotation={rotation}>
+        <Rect
+          x={x - size.width / 2}
+          y={y - size.height / 2}
+          width={width}
+          height={height}
+          fill={fill}
+        >
+          {children}
+        </Rect>
+      </Rotate>
+    </Translate>
   );
 };
-
-interface PointerCircleState {
-  x: number;
-  y: number;
-}
 
 const PointerCircle: Component<{}, PointerCircleState> = (
   { children, x, y },
