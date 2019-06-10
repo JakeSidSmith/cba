@@ -1,24 +1,11 @@
 import Canvasimo from 'canvasimo';
 import { Canvas } from './canvas';
 import { createNode } from './internal/create-node';
+import { destroyTree } from './internal/destroy-tree';
 import { drawTree } from './internal/draw-tree';
 import { ReRender } from './internal/types';
 import { isElementArray, isNodeArray } from './internal/utils';
 import { Element, Node } from './types';
-
-function destroyTree<P = {}, S = {}>(
-  rendered: Node<P, S> | ReadonlyArray<Node> | undefined
-): void {
-  if (!rendered) {
-    return;
-  }
-
-  if (isNodeArray(rendered)) {
-    rendered.forEach(destroyTree);
-  } else if (rendered.onDestroy) {
-    rendered.onDestroy();
-  }
-}
 
 export function updateTree<P = {}, S = {}>(
   next: Element<P, S>,
