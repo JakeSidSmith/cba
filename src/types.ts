@@ -55,3 +55,24 @@ export interface ContextStore<C = {}> {
   setContext: (newContext: Partial<C>) => void;
   getContext: () => C;
 }
+
+export interface ProviderProps<C = {}> {
+  context: C;
+}
+
+export interface ConsumerProps<C = {}> {
+  children?: [
+    (context: C) => Element | ReadonlyArray<Element> | undefined,
+    Element
+  ];
+}
+
+export interface ConsumerState<C> {
+  context: C;
+}
+
+export interface CanvasProps {
+  width: number;
+  height: number;
+  density?: number;
+}

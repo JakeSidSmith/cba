@@ -1,20 +1,10 @@
 import { createStore } from './internal/create-store';
-import { Component, Element } from './types';
-
-export interface ProviderProps<C = {}> {
-  context: C;
-}
-
-export interface ConsumerProps<C = {}> {
-  children?: [
-    (context: C) => Element | ReadonlyArray<Element> | undefined,
-    Element
-  ];
-}
-
-export interface ConsumerState<C> {
-  context: C;
-}
+import {
+  Component,
+  ConsumerProps,
+  ConsumerState,
+  ProviderProps,
+} from './types';
 
 export function createContext<C = {}>(initialContext: C) {
   const store = createStore(initialContext);

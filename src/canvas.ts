@@ -1,10 +1,4 @@
-import { Component } from './types';
-
-export interface CanvasProps {
-  width: number;
-  height: number;
-  density?: number;
-}
+import { CanvasProps, Component } from './types';
 
 const Canvas: Component<CanvasProps> = (
   { width, height, density, children },
