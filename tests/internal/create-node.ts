@@ -25,6 +25,18 @@ describe('createNode', () => {
     expect(typeof node.injected.addChildTransform).toBe('function');
   });
 
+  it('inherits its parents childTransforms', () => {
+    const Foo: Component = () => undefined;
+    const parentElement = createElement(Foo, { foo: 'bar' });
+    const parentNode = createNode(parentElement, undefined, canvas, jest.fn());
+    parentNode.childTransforms = [() => null];
+
+    const element = createElement(Foo, { foo: 'bar' });
+    const node = createNode(element, parentNode, canvas, jest.fn());
+
+    expect(node.childTransforms).toEqual(parentNode.childTransforms);
+  });
+
   describe('setState', () => {
     it('should update the nodes state with the provided object', () => {
       const Foo: Component = () => undefined;
