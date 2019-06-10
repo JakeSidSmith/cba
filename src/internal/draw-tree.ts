@@ -1,5 +1,5 @@
 import Canvasimo from 'canvasimo';
-import { Node } from './types';
+import { Node } from '../types';
 import { isNodeArray } from './utils';
 
 export function drawTree<P = {}>(node: Node<P>, rootCanvas: Canvasimo): void {

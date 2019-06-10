@@ -1,6 +1,6 @@
 import Canvasimo from 'canvasimo';
-import { ReRender } from './render';
-import { Element, Node } from './types';
+import { Element, Node } from '../types';
+import { ReRender } from './types';
 
 export function createNode<P = {}, S = {}>(
   element: Element<P, S>,

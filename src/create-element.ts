@@ -1,5 +1,5 @@
+import { flatten } from './internal/utils';
 import { Component, Element } from './types';
-import { flatten } from './utils';
 
 export function createElement<P = {}>(
   type: Component<P>,

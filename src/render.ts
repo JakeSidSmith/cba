@@ -1,14 +1,10 @@
 import Canvasimo from 'canvasimo';
 import { Canvas } from './canvas';
-import { createNode } from './create-node';
-import { drawTree } from './draw-tree';
+import { createNode } from './internal/create-node';
+import { drawTree } from './internal/draw-tree';
+import { ReRender } from './internal/types';
+import { isElementArray, isNodeArray } from './internal/utils';
 import { Element, Node } from './types';
-import { isElementArray, isNodeArray } from './utils';
-
-export type ReRender = (
-  beforeRender: () => void,
-  afterRender: () => void
-) => void;
 
 function destroyRendered<P = {}, S = {}>(
   rendered: Node<P, S> | ReadonlyArray<Node> | undefined

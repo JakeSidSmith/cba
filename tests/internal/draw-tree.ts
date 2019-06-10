@@ -1,7 +1,7 @@
 import { createElement } from 'cba';
-import { createNode } from '../src/create-node';
-import { drawTree } from '../src/draw-tree';
-import { createCanvas } from './helpers/canvas';
+import { createNode } from '../../src/internal/create-node';
+import { drawTree } from '../../src/internal/draw-tree';
+import { createCanvas } from '../helpers/canvas';
 
 describe('drawTree', () => {
   const { canvas: rootCanvas } = createCanvas();

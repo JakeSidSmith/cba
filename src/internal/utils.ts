@@ -1,4 +1,4 @@
-import { Element, Node } from './types';
+import { Element, Node } from '../types';
 
 const isNodeArray = <P = {}, S = {}>(
   node: Node<P, S> | ReadonlyArray<Node> | undefined

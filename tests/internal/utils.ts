@@ -1,4 +1,4 @@
-import { flatten, isElementArray, isNodeArray } from '../src/utils';
+import { flatten, isElementArray, isNodeArray } from '../../src/internal/utils';
 
 describe('isElementArray', () => {
   it('should return true if the input is an array', () => {
