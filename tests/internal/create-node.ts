@@ -133,5 +133,20 @@ describe('createNode', () => {
     });
   });
 
-  // describe('addChildTransform', () => {});
+  describe('addChildTransform', () => {
+    it('adds functions to the nodes childTransforms', () => {
+      const Foo: Component = () => undefined;
+      const element = createElement(Foo, { foo: 'bar' });
+      const node = createNode(element, undefined, canvas, jest.fn());
+
+      const firstTransform = jest.fn();
+      const secondTransform = jest.fn();
+
+      expect(node.childTransforms).toEqual([]);
+      node.injected.addChildTransform(firstTransform);
+      expect(node.childTransforms).toEqual([firstTransform]);
+      node.injected.addChildTransform(secondTransform);
+      expect(node.childTransforms).toEqual([firstTransform, secondTransform]);
+    });
+  });
 });
