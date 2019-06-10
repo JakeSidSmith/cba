@@ -1,10 +1,14 @@
 import Canvasimo from 'canvasimo';
 import { Canvas } from './canvas';
+import { createNode } from './create-node';
 import { drawTree } from './draw-tree';
 import { Element, Node } from './types';
 import { isElementArray, isNodeArray } from './utils';
 
-type ReRender = (beforeRender: () => void, afterRender: () => void) => void;
+export type ReRender = (
+  beforeRender: () => void,
+  afterRender: () => void
+) => void;
 
 function destroyRendered<P = {}, S = {}>(
   rendered: Node<P, S> | ReadonlyArray<Node> | undefined
@@ -169,45 +173,7 @@ function mountTree<P = {}, S = {}>(
       .setDensity(rootCanvas.getDensity());
   }
 
-  const node: Node<P, S> = {
-    element,
-    previousProps: element.props,
-    rendered: undefined,
-    onCreation: undefined,
-    onDestroy: undefined,
-    onUpdate: undefined,
-    state: {},
-    childTransforms: parentNode ? [...parentNode.childTransforms] : [],
-    injected: {
-      canvas,
-      setState: state => {
-        reRender(
-          () => {
-            node.state =
-              typeof state === 'function'
-                ? state({ ...node.state, ...element.props })
-                : state;
-          },
-          () => {
-            node.previousProps = { ...node.state, ...element.props };
-          }
-        );
-      },
-      onCreation: onCreation => {
-        if (!node.onCreation) {
-          node.onCreation = onCreation;
-        }
-      },
-      onUpdate: onUpdate => {
-        if (!node.onUpdate) {
-          node.onUpdate = onUpdate;
-        }
-      },
-      addChildTransform: childTransform => {
-        node.childTransforms.push(childTransform);
-      },
-    },
-  };
+  const node = createNode(element, parentNode, canvas, reRender);
 
   node.rendered = renderAndMount(
     element,
