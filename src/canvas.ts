@@ -1,6 +1,6 @@
-import { CanvasProps, Component } from './types';
+import { CanvasProps, Component, Element } from './types';
 
-const Canvas: Component<CanvasProps> = (
+const Canvas: Component<CanvasProps, {}, Element> = (
   { width, height, density, children },
   { canvas }
 ) => {

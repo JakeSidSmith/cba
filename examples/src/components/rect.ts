@@ -1,4 +1,4 @@
-import { Component } from 'cba';
+import { Component, Element } from 'cba';
 
 export interface RectProps {
   x: number;
@@ -8,7 +8,7 @@ export interface RectProps {
   fill: string;
 }
 
-const Rect: Component<RectProps> = (
+const Rect: Component<RectProps, {}, Element> = (
   { x, y, width, height, fill, children },
   { canvas }
 ) => {

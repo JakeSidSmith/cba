@@ -1,5 +1,5 @@
 import Canvasimo from 'canvasimo';
-import { Component } from 'cba';
+import { Component, Element } from 'cba';
 
 export interface TranslateAroundProps {
   x: number;
@@ -7,7 +7,7 @@ export interface TranslateAroundProps {
   rotation: number;
 }
 
-const TranslateAround: Component<TranslateAroundProps> = (
+const TranslateAround: Component<TranslateAroundProps, {}, Element> = (
   { x, y, rotation, children },
   { addChildTransform }
 ) => {

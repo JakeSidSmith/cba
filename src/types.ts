@@ -24,13 +24,8 @@ export interface Injected<P = {}, S = {}> {
   addChildTransform: (callback: ChildTransform) => void;
 }
 
-export type ComponentNoChildren<P = {}, S = {}> = ((
-  props: P & Partial<S>,
-  injected: Injected<P, S>
-) => Element | ReadonlyArray<Element> | undefined) & { name?: string };
-
-export type Component<P = {}, S = {}> = ((
-  props: WithChildren<P & Partial<S>>,
+export type Component<P = {}, S = {}, Children = unknown> = ((
+  props: P & Partial<S> & { children?: ReadonlyArray<Children> },
   injected: Injected<P, S>
 ) => Element | ReadonlyArray<Element> | undefined) & { name?: string };
 

@@ -1,22 +1,25 @@
 import { createStore } from './internal/create-store';
 import {
   Component,
-  ComponentNoChildren,
   ConsumerProps,
   ConsumerState,
+  Element,
   ProviderProps,
 } from './types';
 
 export function createContext<C = {}>(initialContext: C) {
   const store = createStore(initialContext);
 
-  const Provider: Component<ProviderProps<C>> = ({ context, children }) => {
+  const Provider: Component<ProviderProps<C>, {}, Element> = ({
+    context,
+    children,
+  }) => {
     store.setContext(context);
 
     return children;
   };
 
-  const Consumer: ComponentNoChildren<ConsumerProps<C>, ConsumerState<C>> = (
+  const Consumer: Component<ConsumerProps<C>, ConsumerState<C>> = (
     { context = store.getContext(), children },
     { onCreation, setState }
   ) => {
