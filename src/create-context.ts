@@ -1,6 +1,7 @@
 import { createStore } from './internal/create-store';
 import {
   Component,
+  ComponentNoChildren,
   ConsumerProps,
   ConsumerState,
   ProviderProps,
@@ -15,7 +16,7 @@ export function createContext<C = {}>(initialContext: C) {
     return children;
   };
 
-  const Consumer: Component<ConsumerProps<C>, ConsumerState<C>> = (
+  const Consumer: ComponentNoChildren<ConsumerProps<C>, ConsumerState<C>> = (
     { context = store.getContext(), children },
     { onCreation, setState }
   ) => {

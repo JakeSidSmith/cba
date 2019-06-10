@@ -24,6 +24,11 @@ export interface Injected<P = {}, S = {}> {
   addChildTransform: (callback: ChildTransform) => void;
 }
 
+export type ComponentNoChildren<P = {}, S = {}> = ((
+  props: P & Partial<S>,
+  injected: Injected<P, S>
+) => Element | ReadonlyArray<Element> | undefined) & { name?: string };
+
 export type Component<P = {}, S = {}> = ((
   props: WithChildren<P & Partial<S>>,
   injected: Injected<P, S>
@@ -61,10 +66,7 @@ export interface ProviderProps<C = {}> {
 }
 
 export interface ConsumerProps<C = {}> {
-  children?: [
-    (context: C) => Element | ReadonlyArray<Element> | undefined,
-    Element
-  ];
+  children?: [(context: C) => Element | ReadonlyArray<Element> | undefined];
 }
 
 export interface ConsumerState<C> {
