@@ -6,7 +6,7 @@ import { ReRender } from './internal/types';
 import { isElementArray, isNodeArray } from './internal/utils';
 import { Element, Node } from './types';
 
-function destroyRendered<P = {}, S = {}>(
+function destroyTree<P = {}, S = {}>(
   rendered: Node<P, S> | ReadonlyArray<Node> | undefined
 ): void {
   if (!rendered) {
@@ -14,7 +14,7 @@ function destroyRendered<P = {}, S = {}>(
   }
 
   if (isNodeArray(rendered)) {
-    rendered.forEach(destroyRendered);
+    rendered.forEach(destroyTree);
   } else if (rendered.onDestroy) {
     rendered.onDestroy();
   }
@@ -45,7 +45,7 @@ export function updateTree<P = {}, S = {}>(
     if (isElementArray(rendered)) {
       if (!isNodeArray(prev.rendered)) {
         prev.rendered = rendered.map((child, index) => {
-          destroyRendered(
+          destroyTree(
             (prev.rendered as ReadonlyArray<Node | undefined>)[index]
           );
 
@@ -82,7 +82,7 @@ export function updateTree<P = {}, S = {}>(
       }
     } else if (rendered) {
       if (isNodeArray(prev.rendered) || !prev.rendered) {
-        destroyRendered(prev.rendered);
+        destroyTree(prev.rendered);
 
         prev.rendered = mountTree(
           rendered,
@@ -100,7 +100,7 @@ export function updateTree<P = {}, S = {}>(
         );
       }
     } else {
-      destroyRendered(prev.rendered);
+      destroyTree(prev.rendered);
       prev.rendered = undefined;
     }
 
@@ -110,7 +110,7 @@ export function updateTree<P = {}, S = {}>(
 
     return prev;
   } else {
-    destroyRendered(prev);
+    destroyTree(prev);
 
     return mountTree(next, parentNode, rootCanvas, reRender);
   }
