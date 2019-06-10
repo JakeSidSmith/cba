@@ -116,7 +116,22 @@ describe('createNode', () => {
     });
   });
 
-  // describe('onUpdate', () => {});
+  describe('onUpdate', () => {
+    it('sets the nodes onCreation property if not already set', () => {
+      const Foo: Component = () => undefined;
+      const element = createElement(Foo, { foo: 'bar' });
+      const node = createNode(element, undefined, canvas, jest.fn());
+
+      const firstOnUpdate = jest.fn();
+      const secondOnUpdate = jest.fn();
+
+      expect(node.onUpdate).toBe(undefined);
+      node.injected.onUpdate(firstOnUpdate);
+      expect(node.onUpdate).toBe(firstOnUpdate);
+      node.injected.onUpdate(secondOnUpdate);
+      expect(node.onUpdate).toBe(firstOnUpdate);
+    });
+  });
 
   // describe('addChildTransform', () => {});
 });
