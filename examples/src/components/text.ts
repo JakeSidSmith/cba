@@ -1,19 +1,21 @@
-import { Component } from 'cba';
+import { ComponentNoChildren } from 'cba';
 
 export interface TextProps {
-  text: string;
   x: number;
   y: number;
   fill: string;
   maxWidth?: number;
-  children?: never;
+  children?: [string];
 }
 
-const Text: Component<TextProps> = (
-  { text, x, y, fill, maxWidth },
+const Text: ComponentNoChildren<TextProps> = (
+  { x, y, fill, maxWidth, children },
   { canvas }
 ) => {
-  canvas.fillText(text, x, y, maxWidth, fill);
+  if (children && children.length) {
+    canvas.fillText(children[0], x, y, maxWidth, fill);
+  }
+
   return undefined;
 };
 
