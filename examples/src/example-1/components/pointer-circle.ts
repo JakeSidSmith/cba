@@ -12,7 +12,7 @@ const PointerCircle: Component<{}, PointerCircleState> = (
   onCreation(() => {
     const onMouseMove = (event: MouseEvent) => {
       const rect = (document.getElementById(
-        'app'
+        'example-1'
       ) as HTMLElement).getBoundingClientRect();
 
       setState({

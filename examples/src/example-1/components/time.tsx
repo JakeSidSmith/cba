@@ -1,8 +1,8 @@
 /* @jsx cba.createElement */
 
 import cba, { Component } from 'cba';
+import { Text } from '../../common/components/text';
 import { TimeContext, TimeProps } from '../time-context';
-import { Text } from './text';
 
 const Time: Component = () => {
   return (
