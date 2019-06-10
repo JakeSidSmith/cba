@@ -16,8 +16,8 @@ export function createStore<C = {}>(initialContext: C): ContextStore<C> {
         }
       };
     },
-    setContext: (newContext: C) => {
-      context = newContext;
+    setContext: newContext => {
+      context = { ...context, ...newContext };
 
       store.subscribers.forEach(subscriber => {
         subscriber(context);
