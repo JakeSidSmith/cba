@@ -99,7 +99,22 @@ describe('createNode', () => {
     expect(node.state).toEqual({ count: 1 });
   });
 
-  // describe('onCreation', () => {});
+  describe('onCreation', () => {
+    it('sets the nodes onCreation property if not already set', () => {
+      const Foo: Component = () => undefined;
+      const element = createElement(Foo, { foo: 'bar' });
+      const node = createNode(element, undefined, canvas, jest.fn());
+
+      const firstOnCreation = jest.fn();
+      const secondOnCreation = jest.fn();
+
+      expect(node.onCreation).toBe(undefined);
+      node.injected.onCreation(firstOnCreation);
+      expect(node.onCreation).toBe(firstOnCreation);
+      node.injected.onCreation(secondOnCreation);
+      expect(node.onCreation).toBe(firstOnCreation);
+    });
+  });
 
   // describe('onUpdate', () => {});
 
