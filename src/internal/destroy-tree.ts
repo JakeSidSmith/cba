@@ -2,15 +2,19 @@ import { Node } from '../types';
 import { isNodeArray } from './utils';
 
 export function destroyTree<P = {}, S = {}>(
-  rendered: Node<P, S> | ReadonlyArray<Node> | undefined
+  node: Node<P, S> | ReadonlyArray<Node> | undefined
 ): void {
-  if (!rendered) {
+  if (!node) {
     return;
   }
 
-  if (isNodeArray(rendered)) {
-    rendered.forEach(destroyTree);
-  } else if (rendered.onDestroy) {
-    rendered.onDestroy();
+  if (isNodeArray(node)) {
+    node.forEach(destroyTree);
+  } else {
+    destroyTree(node.rendered);
+
+    if (node.onDestroy) {
+      node.onDestroy();
+    }
   }
 }
