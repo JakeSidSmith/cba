@@ -4,6 +4,8 @@ import { drawTree } from './draw-tree';
 import { Element, Node } from './types';
 import { isElementArray, isNodeArray } from './utils';
 
+type ReRender = (beforeRender: () => void, afterRender: () => void) => void;
+
 function destroyRendered<P = {}, S = {}>(
   rendered: Node<P, S> | ReadonlyArray<Node> | undefined
 ): void {
@@ -23,7 +25,7 @@ export function updateTree<P = {}, S = {}>(
   prev: Node<P, S>,
   parentNode: Node | undefined,
   rootCanvas: Canvasimo,
-  reRender: () => void
+  reRender: ReRender
 ): Node<P, S> {
   if (next.type === prev.element.type) {
     prev.injected.canvas
@@ -38,7 +40,7 @@ export function updateTree<P = {}, S = {}>(
 
     // Clear existing transforms before re-render
     prev.childTransforms = parentNode ? [...parentNode.childTransforms] : [];
-    const rendered = next.type(next.props, prev.injected);
+    const rendered = next.type({ ...prev.state, ...next.props }, prev.injected);
 
     if (isElementArray(rendered)) {
       if (!isNodeArray(prev.rendered)) {
@@ -103,11 +105,7 @@ export function updateTree<P = {}, S = {}>(
     }
 
     if (prev.onUpdate) {
-      window.requestAnimationFrame(() => {
-        if (prev.onUpdate) {
-          prev.onUpdate(prev.previousProps);
-        }
-      });
+      prev.onUpdate(prev.previousProps);
     }
 
     return prev;
@@ -123,7 +121,7 @@ function renderAndMount<P = {}, S = {}>(
   node: Node<P, S>,
   parentNode: Node | undefined,
   rootCanvas: Canvasimo,
-  reRender: () => void
+  reRender: ReRender
 ): Node | ReadonlyArray<Node> | undefined {
   if (parentNode && parentNode.childTransforms.length) {
     parentNode.childTransforms.forEach(childTransform => {
@@ -155,7 +153,7 @@ function mountTree<P = {}, S = {}>(
   element: Element<P, S>,
   parentNode: Node | undefined,
   rootCanvas: Canvasimo,
-  reRender: () => void
+  reRender: ReRender
 ): Node<P, S> {
   let canvasElement: HTMLCanvasElement;
   let canvas: Canvasimo;
@@ -173,23 +171,27 @@ function mountTree<P = {}, S = {}>(
 
   const node: Node<P, S> = {
     element,
-    previousProps: { ...element.props },
+    previousProps: element.props,
     rendered: undefined,
     onCreation: undefined,
     onDestroy: undefined,
     onUpdate: undefined,
+    state: {},
     childTransforms: parentNode ? [...parentNode.childTransforms] : [],
     injected: {
       canvas,
       setState: state => {
-        const nextState =
-          typeof state === 'function' ? state(element.props) : state;
-        node.element.props = { ...node.previousProps, ...nextState };
-
-        updateTree(element, node, parentNode, rootCanvas, reRender);
-        reRender();
-
-        node.previousProps = element.props;
+        reRender(
+          () => {
+            node.state =
+              typeof state === 'function'
+                ? state({ ...node.state, ...element.props })
+                : state;
+          },
+          () => {
+            node.previousProps = { ...node.state, ...element.props };
+          }
+        );
       },
       onCreation: onCreation => {
         if (!node.onCreation) {
@@ -216,15 +218,11 @@ function mountTree<P = {}, S = {}>(
   );
 
   if (node.onCreation) {
-    window.requestAnimationFrame(() => {
-      if (node.onCreation) {
-        const onDestroy = node.onCreation();
+    const onDestroy = node.onCreation();
 
-        if (onDestroy && !node.onDestroy) {
-          node.onDestroy = onDestroy;
-        }
-      }
-    });
+    if (onDestroy && !node.onDestroy) {
+      node.onDestroy = onDestroy;
+    }
   }
 
   return node;
@@ -234,11 +232,45 @@ export function render<P = {}>(element: Element<P>, root: HTMLElement) {
   const rootCanvasElement = document.createElement('canvas');
   const rootCanvas = new Canvasimo(rootCanvasElement);
 
+  const queuedBeforeRender: Array<() => void> = [];
+  const queuedAfterRender: Array<() => void> = [];
+
+  let queuedRender: number | undefined;
   let tree: Node<P>;
 
-  const reRender = () => {
-    rootCanvas.clearCanvas();
-    drawTree(tree, rootCanvas);
+  const reRender = (beforeRender?: () => void, afterRender?: () => void) => {
+    if (beforeRender) {
+      queuedBeforeRender.push(beforeRender);
+    }
+
+    if (afterRender) {
+      queuedAfterRender.push(afterRender);
+    }
+
+    if (typeof queuedRender === 'number') {
+      window.cancelAnimationFrame(queuedRender);
+    }
+
+    queuedRender = window.requestAnimationFrame(() => {
+      while (queuedBeforeRender.length) {
+        const queuedUpdate = queuedBeforeRender.shift();
+        if (queuedUpdate) {
+          queuedUpdate();
+        }
+      }
+
+      updateTree(element, tree, undefined, rootCanvas, reRender);
+
+      rootCanvas.clearCanvas();
+      drawTree(tree, rootCanvas);
+
+      while (queuedAfterRender.length) {
+        const queuedUpdate = queuedAfterRender.shift();
+        if (queuedUpdate) {
+          queuedUpdate();
+        }
+      }
+    });
   };
   tree = mountTree<P>(element, undefined, rootCanvas, reRender);
   reRender();
