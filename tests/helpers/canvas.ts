@@ -1,8 +1,8 @@
 import Canvasimo from 'canvasimo';
 
 export function createCanvas() {
-  const element = document.createElement('canvas');
-  jest.spyOn(element, 'getContext').mockImplementation((type: string) => {
+  const canvasElement = document.createElement('canvas');
+  jest.spyOn(canvasElement, 'getContext').mockImplementation((type: string) => {
     if (type !== '2d') {
       throw new Error('Invalid attempted to get context other than 2d');
     }
@@ -13,10 +13,10 @@ export function createCanvas() {
       getLineDash: jest.fn(),
     } as unknown) as CanvasRenderingContext2D;
   });
-  const canvas = new Canvasimo(element);
+  const canvas = new Canvasimo(canvasElement);
 
   return {
-    element,
+    canvasElement,
     canvas,
   };
 }
