@@ -1,12 +1,12 @@
 import { Component } from './types';
 
-export interface Props {
+export interface CanvasProps {
   width: number;
   height: number;
   density?: number;
 }
 
-const Canvas: Component<Props> = (
+const Canvas: Component<CanvasProps> = (
   { width, height, density, children },
   { canvas }
 ) => {
