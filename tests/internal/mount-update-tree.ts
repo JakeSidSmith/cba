@@ -1,5 +1,6 @@
 import Canvasimo from 'canvasimo';
-import { Canvas, Component, createElement } from 'cba';
+import { Canvas, Component, createElement, Node } from 'cba';
+import { createNode } from '../../src/internal/create-node';
 import * as mountUpdateTree from '../../src/internal/mount-update-tree';
 import { createCanvas } from '../helpers/canvas';
 
@@ -81,5 +82,56 @@ describe('mountTree', () => {
 
     expect(typeof node).toEqual('object');
     expect(node.onDestroy).toBe(onDestroyCallback);
+  });
+});
+
+describe('renderAndMount', () => {
+  it('should render an element and recursively mount each of its children', () => {
+    const reRender = jest.fn();
+    const { canvas: rootCanvas } = createCanvas();
+    const D = () => undefined;
+    const C = () => createElement(D, {});
+    const B = () => [createElement(C, {}), createElement(C, {})];
+    const A = () => createElement(B, {});
+
+    const element = createElement(A, {});
+    const node = createNode(element, undefined, rootCanvas, reRender);
+    const tree = mountUpdateTree.renderAndMount(
+      element,
+      node,
+      undefined,
+      rootCanvas,
+      reRender
+    );
+
+    expect(typeof tree).toBe('object');
+    expect(Array.isArray(tree)).toBe(false);
+    expect(typeof (tree as Node).rendered).toBe('object');
+    expect(Array.isArray((tree as Node).rendered)).toBe(true);
+    expect(((tree as Node).rendered as ReadonlyArray<Node>).length).toBe(2);
+    expect(
+      typeof ((tree as Node).rendered as ReadonlyArray<Node>)[0].rendered
+    ).toBe('object');
+    expect(
+      typeof ((tree as Node).rendered as ReadonlyArray<Node>)[1].rendered
+    ).toBe('object');
+    expect(
+      Array.isArray(
+        ((tree as Node).rendered as ReadonlyArray<Node>)[0].rendered
+      )
+    ).toBe(false);
+    expect(
+      Array.isArray(
+        ((tree as Node).rendered as ReadonlyArray<Node>)[1].rendered
+      )
+    ).toBe(false);
+    expect(
+      typeof (((tree as Node).rendered as ReadonlyArray<Node>)[0]
+        .rendered as Node).rendered
+    ).toBe('undefined');
+    expect(
+      typeof (((tree as Node).rendered as ReadonlyArray<Node>)[1]
+        .rendered as Node).rendered
+    ).toBe('undefined');
   });
 });
