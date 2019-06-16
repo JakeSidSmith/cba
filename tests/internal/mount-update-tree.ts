@@ -162,6 +162,7 @@ describe('renderAndMount', () => {
       reRender
     );
 
+    // 1 x A, 1 x B, 2 x C, 2 x D
     expect(childTransform).toHaveBeenCalledTimes(6);
   });
 });
