@@ -29,6 +29,7 @@ export function render<P = {}>(element: Element<P>, root: HTMLElement) {
     queuedRender = window.requestAnimationFrame(() => {
       while (queuedBeforeRender.length) {
         const queuedUpdate = queuedBeforeRender.shift();
+        /* istanbul ignore else */
         if (queuedUpdate) {
           queuedUpdate();
         }
@@ -41,6 +42,7 @@ export function render<P = {}>(element: Element<P>, root: HTMLElement) {
 
       while (queuedAfterRender.length) {
         const queuedUpdate = queuedAfterRender.shift();
+        /* istanbul ignore else */
         if (queuedUpdate) {
           queuedUpdate();
         }
