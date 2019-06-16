@@ -134,4 +134,34 @@ describe('renderAndMount', () => {
         .rendered as Node).rendered
     ).toBe('undefined');
   });
+
+  it('should call a parents childTransform for each of its children', () => {
+    const reRender = jest.fn();
+    const { canvas: rootCanvas } = createCanvas();
+    const D = () => undefined;
+    const C = () => createElement(D, {});
+    const B = () => [createElement(C, {}), createElement(C, {})];
+    const A = () => createElement(B, {});
+    const childTransform = jest.fn();
+
+    const element = createElement(A, {});
+    const parentNode = createNode(
+      createElement(() => undefined, {}),
+      undefined,
+      rootCanvas,
+      reRender
+    );
+    parentNode.childTransforms = [childTransform];
+    const node = createNode(element, parentNode, rootCanvas, reRender);
+
+    mountUpdateTree.renderAndMount(
+      element,
+      node,
+      parentNode,
+      rootCanvas,
+      reRender
+    );
+
+    expect(childTransform).toHaveBeenCalledTimes(6);
+  });
 });
