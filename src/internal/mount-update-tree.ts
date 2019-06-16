@@ -168,6 +168,7 @@ export function mountTree<P = {}, S = {}>(
   if (node.onCreation) {
     const onDestroy = node.onCreation();
 
+    /* istanbul ignore else */
     if (onDestroy && !node.onDestroy) {
       node.onDestroy = onDestroy;
     }
