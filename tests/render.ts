@@ -1,14 +1,19 @@
 import Canvasimo from 'canvasimo';
 import { createElement, render } from 'cba';
 import * as drawTreeModule from '../src/internal/draw-tree';
-import * as mountUpdateTree from '../src/internal/mount-update-tree';
+import * as treeUtilsModule from '../src/internal/tree-utils';
 
-const mountTreeSpy = jest
-  .spyOn(mountUpdateTree, 'mountTree')
-  .mockImplementation(jest.fn());
-const updateTreeSpy = jest
-  .spyOn(mountUpdateTree, 'updateTree')
-  .mockImplementation(jest.fn());
+const mountTreeSpy = jest.fn();
+const renderAndMountTreeSpy = jest.fn();
+const updateTreeSpy = jest.fn();
+
+const createTreeUtilsSpy = jest
+  .spyOn(treeUtilsModule, 'createTreeUtils')
+  .mockReturnValue({
+    mountTree: mountTreeSpy,
+    renderAndMountTree: renderAndMountTreeSpy,
+    updateTree: updateTreeSpy,
+  });
 const drawTreeSpy = jest
   .spyOn(drawTreeModule, 'drawTree')
   .mockImplementation(jest.fn());
@@ -46,6 +51,7 @@ const cancelAnimationFrameSpy = jest
   .mockImplementation(jest.fn());
 
 beforeEach(() => {
+  createTreeUtilsSpy.mockClear();
   mountTreeSpy.mockClear();
   updateTreeSpy.mockClear();
   drawTreeSpy.mockClear();
@@ -54,12 +60,19 @@ beforeEach(() => {
 });
 
 describe('render', () => {
-  it('should call mountTree with the provided element, an undefined parent node, the root canvas, and a reRender function, and return the provided root element', () => {
+  it('should create tree utils with the root canvas, and a reRender function; call mountTree with the provided element, an undefined parent node; and return the provided root element', () => {
     const Foo = () => undefined;
     const root = document.createElement('div');
     const element = createElement(Foo, {});
 
     const result = render(element, root);
+
+    expect(createTreeUtilsSpy).toHaveBeenCalledTimes(1);
+
+    const [createTreeUtilsCall] = createTreeUtilsSpy.mock.calls;
+
+    expect(createTreeUtilsCall[0] instanceof Canvasimo).toBe(true);
+    expect(typeof createTreeUtilsCall[1]).toBe('function');
 
     expect(mountTreeSpy).toHaveBeenCalledTimes(1);
 
@@ -67,8 +80,6 @@ describe('render', () => {
 
     expect(mountTreeCall[0]).toBe(element);
     expect(mountTreeCall[1]).toBe(undefined);
-    expect(mountTreeCall[2] instanceof Canvasimo).toBe(true);
-    expect(typeof mountTreeCall[3]).toBe('function');
 
     expect(result).toBe(root);
   });
@@ -81,8 +92,8 @@ describe('reRender', () => {
 
   render(element, root);
 
-  const [mountTreeCall] = mountTreeSpy.mock.calls;
-  const [, , , reRender] = mountTreeCall;
+  const [createTreeUtilsCall] = createTreeUtilsSpy.mock.calls;
+  const [, reRender] = createTreeUtilsCall;
 
   const before = jest.fn();
   const after = jest.fn();
