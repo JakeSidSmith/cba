@@ -1,3 +1,15 @@
-export const message = 'Currently being assembled...';
+export * from './types';
 
-export default message;
+import { Canvas } from './canvas';
+import { createContext } from './create-context';
+import { createElement } from './create-element';
+import { render } from './render';
+
+export { Canvas, createContext, createElement, render };
+
+export default {
+  Canvas,
+  createContext,
+  createElement,
+  render,
+};
