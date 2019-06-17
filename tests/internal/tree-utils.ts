@@ -374,4 +374,28 @@ describe('updateTree', () => {
     expect(mountTreeSpy).toHaveBeenCalledTimes(1);
     expect(mountTreeSpy).toHaveBeenCalledWith(nextChild, prev);
   });
+
+  it('should update a single child with a new child', () => {
+    const reRender = jest.fn();
+    const { canvas: rootCanvas } = createCanvas();
+    const treeUtils = createTreeUtils(rootCanvas, reRender);
+
+    const B = jest.fn();
+    const A = jest.fn();
+
+    const prevChild = createElement(B, {});
+    const nextChild = createElement(B, {});
+    A.mockImplementation(() => nextChild);
+    A.mockImplementationOnce(() => prevChild);
+
+    const element = createElement(A, {});
+    const prev = treeUtils.mountTree(element, undefined);
+    const prevRendered = prev.rendered;
+
+    const updateTreeSpy = jest.spyOn(treeUtils, 'updateTree');
+    treeUtils.updateTree(element, prev, undefined);
+
+    expect(updateTreeSpy).toHaveBeenCalledTimes(2);
+    expect(updateTreeSpy).toHaveBeenCalledWith(nextChild, prevRendered, prev);
+  });
 });
