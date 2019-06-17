@@ -1,7 +1,24 @@
-import cba from 'cba';
+import * as cba from 'cba';
 
 describe('cba', () => {
-  it('should be in the process of being assembled', () => {
-    expect(cba).toBe('Currently being assembled...');
+  const exportedFunctions = [
+    'Canvas',
+    'createContext',
+    'createElement',
+    'render',
+  ];
+
+  it(`should export ${exportedFunctions} functions, and a default containing the same functions`, () => {
+    expect(Object.keys(cba)).toEqual([...exportedFunctions, 'default']);
+
+    exportedFunctions.forEach(key => {
+      expect(typeof (cba as any)[key]).toBe('function');
+    });
+
+    expect(typeof cba.default).toBe('object');
+
+    exportedFunctions.forEach(key => {
+      expect((cba as any)[key]).toBe((cba.default as any)[key]);
+    });
   });
 });
