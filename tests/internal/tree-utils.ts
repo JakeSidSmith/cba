@@ -1,7 +1,7 @@
 import Canvasimo from 'canvasimo';
 import { Canvas, Component, createElement, Node } from 'cba';
 import { createNode } from '../../src/internal/create-node';
-import * as mountUpdateTree from '../../src/internal/mount-update-tree';
+import { createTreeUtils } from '../../src/internal/tree-utils';
 import { createCanvas } from '../helpers/canvas';
 
 const originalCreateElement = document.createElement;
@@ -31,14 +31,11 @@ describe('mountTree', () => {
   it('should create a node from the provided element', () => {
     const reRender = jest.fn();
     const { canvas: rootCanvas } = createCanvas();
+    const treeUtils = createTreeUtils(rootCanvas, reRender);
+
     const Foo = () => undefined;
     const element = createElement(Foo, {});
-    const node = mountUpdateTree.mountTree(
-      element,
-      undefined,
-      rootCanvas,
-      reRender
-    );
+    const node = treeUtils.mountTree(element, undefined);
 
     expect(typeof node).toEqual('object');
     expect(node.injected.canvas instanceof Canvasimo).toBe(true);
@@ -48,13 +45,10 @@ describe('mountTree', () => {
   it('should create a node from the provided element with the root canvas, if the element is a canvas element', () => {
     const reRender = jest.fn();
     const { canvas: rootCanvas } = createCanvas();
+    const treeUtils = createTreeUtils(rootCanvas, reRender);
+
     const element = createElement(Canvas, { width: 100, height: 100 });
-    const node = mountUpdateTree.mountTree(
-      element,
-      undefined,
-      rootCanvas,
-      reRender
-    );
+    const node = treeUtils.mountTree(element, undefined);
 
     expect(typeof node).toEqual('object');
     expect(node.injected.canvas instanceof Canvasimo).toBe(true);
@@ -64,6 +58,7 @@ describe('mountTree', () => {
   it('should assign the onDestroy callback to the created node', () => {
     const reRender = jest.fn();
     const { canvas: rootCanvas } = createCanvas();
+    const treeUtils = createTreeUtils(rootCanvas, reRender);
 
     const onDestroyCallback = jest.fn();
     const onCreationCallback = jest.fn().mockReturnValue(onDestroyCallback);
@@ -73,22 +68,19 @@ describe('mountTree', () => {
       return undefined;
     };
     const element = createElement(Foo, {});
-    const node = mountUpdateTree.mountTree(
-      element,
-      undefined,
-      rootCanvas,
-      reRender
-    );
+    const node = treeUtils.mountTree(element, undefined);
 
     expect(typeof node).toEqual('object');
     expect(node.onDestroy).toBe(onDestroyCallback);
   });
 });
 
-describe('renderAndMount', () => {
+describe('renderAndMountTree', () => {
   it('should render an element and recursively mount each of its children', () => {
     const reRender = jest.fn();
     const { canvas: rootCanvas } = createCanvas();
+    const treeUtils = createTreeUtils(rootCanvas, reRender);
+
     const D = () => undefined;
     const C = () => createElement(D, {});
     const B = () => [createElement(C, {}), createElement(C, {})];
@@ -96,13 +88,7 @@ describe('renderAndMount', () => {
 
     const element = createElement(A, {});
     const node = createNode(element, undefined, rootCanvas, reRender);
-    const tree = mountUpdateTree.renderAndMount(
-      element,
-      node,
-      undefined,
-      rootCanvas,
-      reRender
-    );
+    const tree = treeUtils.renderAndMountTree(element, node, undefined);
 
     expect(typeof tree).toBe('object');
     expect(Array.isArray(tree)).toBe(false);
@@ -138,6 +124,8 @@ describe('renderAndMount', () => {
   it('should call a parents childTransform for each of its children', () => {
     const reRender = jest.fn();
     const { canvas: rootCanvas } = createCanvas();
+    const treeUtils = createTreeUtils(rootCanvas, reRender);
+
     const D = () => undefined;
     const C = () => createElement(D, {});
     const B = () => [createElement(C, {}), createElement(C, {})];
@@ -154,13 +142,7 @@ describe('renderAndMount', () => {
     parentNode.childTransforms = [childTransform];
     const node = createNode(element, parentNode, rootCanvas, reRender);
 
-    mountUpdateTree.renderAndMount(
-      element,
-      node,
-      parentNode,
-      rootCanvas,
-      reRender
-    );
+    treeUtils.renderAndMountTree(element, node, parentNode);
 
     // 1 x A, 1 x B, 2 x C, 2 x D
     expect(childTransform).toHaveBeenCalledTimes(6);
