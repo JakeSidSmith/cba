@@ -6,3 +6,7 @@
 
 .DS_Store
 npm-debug.log*
+
+# Ignore from NPM, not Git
+/examples/*
+/tests/*
