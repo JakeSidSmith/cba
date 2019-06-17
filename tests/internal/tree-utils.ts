@@ -148,3 +148,29 @@ describe('renderAndMountTree', () => {
     expect(childTransform).toHaveBeenCalledTimes(6);
   });
 });
+
+describe('updateTree', () => {
+  it('should destroy the tree, and mount a new tree when the element type changes', () => {
+    const reRender = jest.fn();
+    const { canvas: rootCanvas } = createCanvas();
+    const treeUtils = createTreeUtils(rootCanvas, reRender);
+
+    const mountTreeSpy = jest.spyOn(treeUtils, 'mountTree');
+
+    const Next = () => undefined;
+    const Prev = () => undefined;
+
+    const nextElement = createElement(Prev, {});
+    const prevNode = createNode(
+      createElement(Next, {}),
+      undefined,
+      rootCanvas,
+      reRender
+    );
+
+    treeUtils.updateTree(nextElement, prevNode, undefined);
+
+    expect(mountTreeSpy).toHaveBeenCalledTimes(1);
+    expect(mountTreeSpy).toHaveBeenLastCalledWith(nextElement, undefined);
+  });
+});
