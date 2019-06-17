@@ -1,6 +1,7 @@
 import Canvasimo from 'canvasimo';
 import { drawTree } from './internal/draw-tree';
-import { mountTree, updateTree } from './internal/mount-update-tree';
+import { createTreeUtils } from './internal/tree-utils';
+import { TreeUtils } from './internal/types';
 import { Element, Node } from './types';
 
 export function render<P = {}>(element: Element<P>, root: HTMLElement) {
@@ -12,6 +13,7 @@ export function render<P = {}>(element: Element<P>, root: HTMLElement) {
 
   let queuedRender: number | undefined;
   let tree: Node<P>;
+  let treeUtils: TreeUtils;
 
   const reRender = (beforeRender?: () => void, afterRender?: () => void) => {
     if (beforeRender) {
@@ -35,7 +37,7 @@ export function render<P = {}>(element: Element<P>, root: HTMLElement) {
         }
       }
 
-      updateTree(element, tree, undefined, rootCanvas, reRender);
+      treeUtils.updateTree(element, tree, undefined);
 
       rootCanvas.clearCanvas();
       drawTree(tree, rootCanvas);
@@ -49,7 +51,9 @@ export function render<P = {}>(element: Element<P>, root: HTMLElement) {
       }
     });
   };
-  tree = mountTree<P>(element, undefined, rootCanvas, reRender);
+
+  treeUtils = createTreeUtils(rootCanvas, reRender);
+  tree = treeUtils.mountTree<P>(element, undefined);
   reRender();
 
   root.appendChild(rootCanvasElement);
