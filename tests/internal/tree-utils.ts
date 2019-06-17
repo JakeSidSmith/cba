@@ -265,4 +265,28 @@ describe('updateTree', () => {
     expect(node.onUpdate).toHaveBeenCalledTimes(1);
     expect(node.onUpdate).toHaveBeenCalledWith(node.previousProps);
   });
+
+  it('should destroy undefined children if children were added, and mount each new child', () => {
+    const reRender = jest.fn();
+    const { canvas: rootCanvas } = createCanvas();
+    const treeUtils = createTreeUtils(rootCanvas, reRender);
+
+    const B = jest.fn();
+    const A = jest.fn();
+
+    const element = createElement(A, {});
+    const prev = treeUtils.mountTree(element, undefined);
+
+    const nextChildren = [createElement(B, {}), createElement(B, {})];
+    A.mockImplementation(() => nextChildren);
+
+    const mountTreeSpy = jest.spyOn(treeUtils, 'mountTree');
+    treeUtils.updateTree(element, prev, undefined);
+
+    expect(destroyTreeSpy).toHaveBeenCalledTimes(1);
+    expect(destroyTreeSpy).toHaveBeenCalledWith(undefined);
+    expect(mountTreeSpy).toHaveBeenCalledTimes(2);
+    expect(mountTreeSpy).toHaveBeenCalledWith(nextChildren[0], prev);
+    expect(mountTreeSpy).toHaveBeenCalledWith(nextChildren[1], prev);
+  });
 });
