@@ -1,6 +1,7 @@
 import Canvasimo from 'canvasimo';
 import { Canvas, Component, createElement, Node } from 'cba';
 import { createNode } from '../../src/internal/create-node';
+import * as destroyTreeModule from '../../src/internal/destroy-tree';
 import { createTreeUtils } from '../../src/internal/tree-utils';
 import { createCanvas } from '../helpers/canvas';
 
@@ -25,6 +26,14 @@ jest.spyOn(document, 'createElement').mockImplementation((tag: string) => {
   }
 
   return element;
+});
+
+const destroyTreeSpy = jest
+  .spyOn(destroyTreeModule, 'destroyTree')
+  .mockImplementation(jest.fn());
+
+beforeEach(() => {
+  destroyTreeSpy.mockClear();
 });
 
 describe('mountTree', () => {
@@ -169,6 +178,9 @@ describe('updateTree', () => {
     );
 
     treeUtils.updateTree(nextElement, prevNode, undefined);
+
+    expect(destroyTreeSpy).toHaveBeenCalledTimes(1);
+    expect(destroyTreeSpy).toHaveBeenCalledWith(prevNode);
 
     expect(mountTreeSpy).toHaveBeenCalledTimes(1);
     expect(mountTreeSpy).toHaveBeenLastCalledWith(nextElement, undefined);
