@@ -24,9 +24,11 @@ export function createTreeUtils(
       canvasElement = rootCanvas.getElement();
       canvas = rootCanvas;
     } else {
+      const { width, height } = rootCanvas.getSize();
+
       canvasElement = document.createElement('canvas');
       canvas = new Canvasimo(canvasElement)
-        .setSize(rootCanvas.getSize())
+        .setSize(width, height)
         .setDensity(rootCanvas.getDensity());
     }
 
@@ -78,8 +80,10 @@ export function createTreeUtils(
     parentNode: Node | undefined
   ): Node<P, S> {
     if (next.type === prev.element.type) {
+      const { width, height } = rootCanvas.getSize();
+
       prev.injected.canvas
-        .setSize(rootCanvas.getSize())
+        .setSize(width, height)
         .setDensity(rootCanvas.getDensity());
 
       if (parentNode && parentNode.childTransforms.length) {

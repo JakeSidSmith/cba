@@ -185,4 +185,29 @@ describe('updateTree', () => {
     expect(mountTreeSpy).toHaveBeenCalledTimes(1);
     expect(mountTreeSpy).toHaveBeenLastCalledWith(nextElement, undefined);
   });
+
+  it('should clear the canvas when the element remains the same, and re-render it', () => {
+    const reRender = jest.fn();
+    const { canvas: rootCanvas } = createCanvas();
+    const treeUtils = createTreeUtils(rootCanvas, reRender);
+
+    rootCanvas.setSize(123, 456).setDensity(2);
+
+    const { canvas } = createCanvas();
+    const Foo = jest.fn();
+    const element = createElement(Foo, {});
+    const node = createNode(element, undefined, canvas, reRender);
+
+    const setSizeSpy = jest.spyOn(canvas, 'setSize');
+    const setDensitySpy = jest.spyOn(canvas, 'setDensity');
+
+    treeUtils.updateTree(element, node, undefined);
+
+    expect(setSizeSpy).toHaveBeenCalledTimes(1);
+    expect(setSizeSpy).toHaveBeenCalledWith(123, 456);
+    expect(setDensitySpy).toHaveBeenCalledTimes(1);
+    expect(setDensitySpy).toHaveBeenCalledWith(2);
+
+    expect(Foo).toHaveBeenCalledTimes(1);
+  });
 });
