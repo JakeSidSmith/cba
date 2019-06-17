@@ -246,4 +246,23 @@ describe('updateTree', () => {
     expect(transform2).toHaveBeenCalledTimes(1);
     expect(transform2).toHaveBeenLastCalledWith(canvas);
   });
+
+  it('should call onUpdate with previous props when one was previously registered', () => {
+    const reRender = jest.fn();
+    const { canvas: rootCanvas } = createCanvas();
+    const treeUtils = createTreeUtils(rootCanvas, reRender);
+
+    rootCanvas.setSize(123, 456).setDensity(2);
+
+    const { canvas } = createCanvas();
+    const Foo = jest.fn();
+    const element = createElement(Foo, {});
+    const node = createNode(element, undefined, canvas, reRender);
+    node.onUpdate = jest.fn();
+
+    treeUtils.updateTree(element, node, undefined);
+
+    expect(node.onUpdate).toHaveBeenCalledTimes(1);
+    expect(node.onUpdate).toHaveBeenCalledWith(node.previousProps);
+  });
 });
