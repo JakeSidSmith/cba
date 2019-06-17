@@ -289,4 +289,32 @@ describe('updateTree', () => {
     expect(mountTreeSpy).toHaveBeenCalledWith(nextChildren[0], prev);
     expect(mountTreeSpy).toHaveBeenCalledWith(nextChildren[1], prev);
   });
+
+  it('should destroy previous children trees if they were removed', () => {
+    const reRender = jest.fn();
+    const { canvas: rootCanvas } = createCanvas();
+    const treeUtils = createTreeUtils(rootCanvas, reRender);
+
+    const B = jest.fn();
+    const A = jest.fn();
+
+    A.mockImplementationOnce(() => [
+      createElement(B, {}),
+      createElement(B, {}),
+    ]);
+
+    const element = createElement(A, {});
+    const prev = treeUtils.mountTree(element, undefined);
+    const prevRendered = prev.rendered;
+
+    const mountTreeSpy = jest.spyOn(treeUtils, 'mountTree');
+    treeUtils.updateTree(element, prev, undefined);
+
+    expect(destroyTreeSpy).toHaveBeenCalledTimes(1);
+    expect(destroyTreeSpy).toHaveBeenCalledWith(prevRendered);
+    expect(Array.isArray(prevRendered)).toBe(true);
+    expect(((prevRendered as unknown) as ReadonlyArray<Node>).length).toBe(2);
+    expect(prev.rendered).toBe(undefined);
+    expect(mountTreeSpy).not.toHaveBeenCalled();
+  });
 });
