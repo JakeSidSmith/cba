@@ -210,4 +210,40 @@ describe('updateTree', () => {
 
     expect(Foo).toHaveBeenCalledTimes(1);
   });
+
+  it('should call each parent transform with the current elements canvas', () => {
+    const reRender = jest.fn();
+    const { canvas: rootCanvas } = createCanvas();
+    const treeUtils = createTreeUtils(rootCanvas, reRender);
+
+    rootCanvas.setSize(123, 456).setDensity(2);
+
+    const { canvas: parentCanvas } = createCanvas();
+    const Parent = jest.fn();
+    const parentElement = createElement(Parent, {});
+    const parentNode = createNode(
+      parentElement,
+      undefined,
+      parentCanvas,
+      reRender
+    );
+
+    const transform1 = jest.fn();
+    const transform2 = jest.fn();
+
+    parentNode.childTransforms.push(transform1);
+    parentNode.childTransforms.push(transform2);
+
+    const { canvas } = createCanvas();
+    const Foo = jest.fn();
+    const element = createElement(Foo, {});
+    const node = createNode(element, parentNode, canvas, reRender);
+
+    treeUtils.updateTree(element, node, parentNode);
+
+    expect(transform1).toHaveBeenCalledTimes(1);
+    expect(transform1).toHaveBeenLastCalledWith(canvas);
+    expect(transform2).toHaveBeenCalledTimes(1);
+    expect(transform2).toHaveBeenLastCalledWith(canvas);
+  });
 });
