@@ -318,7 +318,7 @@ describe('updateTree', () => {
     expect(mountTreeSpy).not.toHaveBeenCalled();
   });
 
-  it('should destroy previous children trees if they replaced with a single child', () => {
+  it('should destroy previous children trees if they are replaced with a single child', () => {
     const reRender = jest.fn();
     const { canvas: rootCanvas } = createCanvas();
     const treeUtils = createTreeUtils(rootCanvas, reRender);
@@ -345,6 +345,32 @@ describe('updateTree', () => {
     expect(Array.isArray(prevRendered)).toBe(true);
     expect(((prevRendered as unknown) as ReadonlyArray<Node>).length).toBe(2);
     expect(Array.isArray(prev.rendered)).toBe(false);
+    expect(mountTreeSpy).toHaveBeenCalledTimes(1);
+    expect(mountTreeSpy).toHaveBeenCalledWith(nextChild, prev);
+  });
+
+  it('should destroy undefined children if they are replaced with a single child', () => {
+    const reRender = jest.fn();
+    const { canvas: rootCanvas } = createCanvas();
+    const treeUtils = createTreeUtils(rootCanvas, reRender);
+
+    const B = jest.fn();
+    const A = jest.fn();
+
+    const nextChild = createElement(B, {});
+
+    const element = createElement(A, {});
+    const prev = treeUtils.mountTree(element, undefined);
+    const prevRendered = prev.rendered;
+
+    A.mockImplementationOnce(() => createElement(B, {}));
+    const mountTreeSpy = jest.spyOn(treeUtils, 'mountTree');
+    treeUtils.updateTree(element, prev, undefined);
+
+    expect(destroyTreeSpy).toHaveBeenCalledTimes(1);
+    expect(destroyTreeSpy).toHaveBeenCalledWith(prevRendered);
+    expect(typeof prevRendered).toBe('undefined');
+    expect(typeof prev.rendered).not.toBe('undefined');
     expect(mountTreeSpy).toHaveBeenCalledTimes(1);
     expect(mountTreeSpy).toHaveBeenCalledWith(nextChild, prev);
   });
