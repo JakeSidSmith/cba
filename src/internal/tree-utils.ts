@@ -99,20 +99,12 @@ export function createTreeUtils(
         prev.injected
       );
 
-      if (isElementArray(rendered)) {
-        if (!isNodeArray(prev.rendered)) {
-          prev.rendered = rendered.map((child, index) => {
-            destroyTree(
-              (prev.rendered as ReadonlyArray<Node | undefined>)[index]
-            );
+      const { rendered: prevRendered } = prev;
 
-            return treeUtils.mountTree(child, (prev as unknown) as Node);
-          });
-        } else {
+      if (isElementArray(rendered)) {
+        if (isNodeArray(prevRendered)) {
           prev.rendered = rendered.map((child, index) => {
-            const prevChild = (prev.rendered as ReadonlyArray<
-              Node | undefined
-            >)[index];
+            const prevChild = prevRendered[index];
 
             if (!prevChild) {
               return treeUtils.mountTree(child, (prev as unknown) as Node);
@@ -124,10 +116,16 @@ export function createTreeUtils(
               (prev as unknown) as Node
             );
           });
+        } else {
+          destroyTree(prevRendered);
+
+          prev.rendered = rendered.map(child => {
+            return treeUtils.mountTree(child, (prev as unknown) as Node);
+          });
         }
       } else if (rendered) {
-        if (isNodeArray(prev.rendered) || !prev.rendered) {
-          destroyTree(prev.rendered);
+        if (isNodeArray(prevRendered) || !prevRendered) {
+          destroyTree(prevRendered);
 
           prev.rendered = treeUtils.mountTree(
             rendered,
@@ -136,12 +134,12 @@ export function createTreeUtils(
         } else {
           prev.rendered = treeUtils.updateTree(
             rendered,
-            prev.rendered,
+            prevRendered,
             (prev as unknown) as Node
           );
         }
       } else {
-        destroyTree(prev.rendered);
+        destroyTree(prevRendered);
         prev.rendered = undefined;
       }
 
