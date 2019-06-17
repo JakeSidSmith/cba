@@ -5,3 +5,7 @@
 [![CircleCI](https://circleci.com/gh/JakeSidSmith/cba.svg?style=svg)](https://circleci.com/gh/JakeSidSmith/cba)
 
 Links: [GitHub](https://github.com/jakesidsmith/cba), [NPM](https://www.npmjs.com/package/cba)
+
+## Documentation
+
+Currently being assembled...
