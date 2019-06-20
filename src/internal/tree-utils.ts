@@ -166,6 +166,9 @@ export function createTreeUtils(
           prev.onUpdate(prev.previousProps);
         }
 
+        // Update previous props
+        prev.previousProps = { ...next.props };
+
         return prev;
       } else {
         if (isNodeArray(prev.rendered)) {
