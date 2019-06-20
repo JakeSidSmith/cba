@@ -185,8 +185,6 @@ export function createTreeUtils(
             prev.rendered,
             (prev as unknown) as Node
           );
-        } else {
-          prev.rendered = undefined;
         }
 
         return prev;
