@@ -117,7 +117,7 @@ describe('createNode', () => {
   });
 
   describe('onUpdate', () => {
-    it('sets the nodes onCreation property if not already set', () => {
+    it('sets the nodes onUpdate property if not already set', () => {
       const Foo: Component = () => undefined;
       const element = createElement(Foo, { foo: 'bar' });
       const node = createNode(element, undefined, canvas, jest.fn());
@@ -130,6 +130,23 @@ describe('createNode', () => {
       expect(node.onUpdate).toBe(firstOnUpdate);
       node.injected.onUpdate(secondOnUpdate);
       expect(node.onUpdate).toBe(firstOnUpdate);
+    });
+  });
+
+  describe('shouldUpdate', () => {
+    it('sets the nodes shouldUpdate property if not already set', () => {
+      const Foo: Component = () => undefined;
+      const element = createElement(Foo, { foo: 'bar' });
+      const node = createNode(element, undefined, canvas, jest.fn());
+
+      const firstShouldUpdate = jest.fn();
+      const secondShouldUpdate = jest.fn();
+
+      expect(node.shouldUpdate).toBe(undefined);
+      node.injected.shouldUpdate(firstShouldUpdate);
+      expect(node.shouldUpdate).toBe(firstShouldUpdate);
+      node.injected.shouldUpdate(secondShouldUpdate);
+      expect(node.shouldUpdate).toBe(firstShouldUpdate);
     });
   });
 
