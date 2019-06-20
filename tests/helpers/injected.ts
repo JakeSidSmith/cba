@@ -9,6 +9,7 @@ export function createInjected<P = {}, S = {}>() {
     setState: jest.fn(),
     onCreation: jest.fn(),
     onUpdate: jest.fn(),
+    shouldUpdate: jest.fn(),
     addChildTransform: jest.fn(),
   };
 
