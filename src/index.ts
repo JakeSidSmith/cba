@@ -1,16 +1,16 @@
 export * from './types';
 
 import { Canvas } from './canvas';
-import { createContext } from './create-context';
+import { connect } from './connect';
 import { createElement } from './create-element';
 import { createStore } from './create-store';
 import { render } from './render';
 
-export { Canvas, createContext, createElement, createStore, render };
+export { Canvas, connect, createElement, createStore, render };
 
 export default {
   Canvas,
-  createContext,
+  connect,
   createElement,
   createStore,
   render,

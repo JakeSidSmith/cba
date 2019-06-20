@@ -61,18 +61,6 @@ export interface Store<C = {}> {
   getStoreState: () => C;
 }
 
-export interface ProviderProps<C = {}> {
-  context: C;
-}
-
-export interface ConsumerProps<C = {}> {
-  children?: [(context: C) => Element | ReadonlyArray<Element> | undefined];
-}
-
-export interface ConsumerState<C> {
-  context: C;
-}
-
 export interface CanvasProps {
   width: number;
   height: number;

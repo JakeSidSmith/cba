@@ -1,21 +1,20 @@
 /* @jsx cba.createElement */
 
-import cba, { Component } from 'cba';
-import { TimeContext, TimeProps } from '../time-context';
+import cba, { connect } from 'cba';
+import { StoreState, timeStore } from '../time-store';
 import { Text } from './text';
 
-const Time: Component = () => {
-  return (
-    <TimeContext.Consumer>
-      {({ time }: TimeProps) => {
-        return (
-          <Text x={30} y={40} fill="black">
-            {time}
-          </Text>
-        );
-      }}
-    </TimeContext.Consumer>
-  );
-};
+type StoreProps = Pick<StoreState, 'time'>;
+
+const mapStoreState = ({ time }: StoreState) => ({ time });
+
+const Time = connect(
+  timeStore,
+  mapStoreState
+)((props: StoreProps) => (
+  <Text x={30} y={40} fill="black">
+    {props.time}
+  </Text>
+));
 
 export { Time };
