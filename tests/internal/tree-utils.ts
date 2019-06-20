@@ -437,8 +437,8 @@ describe('updateTree', () => {
       prev
     );
     expect(updateTreeSpy).toHaveBeenCalledWith(
-      nextChildren[0],
-      (prevRendered as ReadonlyArray<Node>)[0],
+      nextChildren[1],
+      (prevRendered as ReadonlyArray<Node>)[1],
       prev
     );
   });
