@@ -56,7 +56,6 @@ export type ContextStoreSubscriber<C = {}> = (context: C) => void;
 export type ContextStoreUnSubscriber = () => void;
 
 export interface ContextStore<C = {}> {
-  subscribers: Array<ContextStoreSubscriber<C>>;
   subscribe: (callback: ContextStoreSubscriber<C>) => ContextStoreUnSubscriber;
   setContext: (newContext: Partial<C>) => void;
   getContext: () => C;

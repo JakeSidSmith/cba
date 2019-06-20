@@ -1,25 +1,29 @@
-import { ContextStore } from 'src/types';
+import { ContextStore, ContextStoreSubscriber } from '../types';
 
 export function createStore<C = {}>(initialContext: C): ContextStore<C> {
   let context = initialContext;
 
+  const subscribers: Array<ContextStoreSubscriber<C>> = [];
+
   const store: ContextStore<C> = {
-    subscribers: [],
     subscribe: callback => {
-      store.subscribers.push(callback);
+      /* istanbul ignore else */
+      if (subscribers.indexOf(callback) < 0) {
+        subscribers.push(callback);
+      }
 
       return () => {
-        const index = store.subscribers.indexOf(callback);
+        const index = subscribers.indexOf(callback);
 
         if (index >= 0) {
-          store.subscribers.splice(index, 1);
+          subscribers.splice(index, 1);
         }
       };
     },
     setContext: newContext => {
       context = { ...context, ...newContext };
 
-      store.subscribers.forEach(subscriber => {
+      subscribers.forEach(subscriber => {
         subscriber(context);
       });
     },
