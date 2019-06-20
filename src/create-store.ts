@@ -1,11 +1,13 @@
 import { Store, StoreSubscriber } from './types';
 
-export function createStore<C = {}>(initialContext: C): Store<C> {
-  let context = initialContext;
+export function createStore<StoreState = {}>(
+  initialState: StoreState
+): Store<StoreState> {
+  let state = initialState;
 
-  const subscribers: Array<StoreSubscriber<C>> = [];
+  const subscribers: Array<StoreSubscriber<StoreState>> = [];
 
-  const store: Store<C> = {
+  const store: Store<StoreState> = {
     subscribe: callback => {
       /* istanbul ignore else */
       if (subscribers.indexOf(callback) < 0) {
@@ -20,15 +22,15 @@ export function createStore<C = {}>(initialContext: C): Store<C> {
         }
       };
     },
-    setStoreState: newContext => {
-      context = { ...context, ...newContext };
+    setStoreState: newState => {
+      state = { ...state, ...newState };
 
       subscribers.forEach(subscriber => {
-        subscriber(context);
+        subscriber(state);
       });
     },
     getStoreState: () => {
-      return context;
+      return state;
     },
   };
 

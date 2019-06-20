@@ -52,13 +52,13 @@ export interface Node<P = {}, S = {}> {
   childTransforms: ChildTransform[];
 }
 
-export type StoreSubscriber<C = {}> = (context: C) => void;
+export type StoreSubscriber<StoreState = {}> = (state: StoreState) => void;
 export type StoreUnSubscriber = () => void;
 
-export interface Store<C = {}> {
-  subscribe: (callback: StoreSubscriber<C>) => StoreUnSubscriber;
-  setStoreState: (newState: Partial<C>) => void;
-  getStoreState: () => C;
+export interface Store<StoreState = {}> {
+  subscribe: (callback: StoreSubscriber<StoreState>) => StoreUnSubscriber;
+  setStoreState: (newState: Partial<StoreState>) => void;
+  getStoreState: () => StoreState;
 }
 
 export interface CanvasProps {
