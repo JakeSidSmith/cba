@@ -18,4 +18,20 @@ const flatten = <P>(
     return flat;
   }, []);
 
-export { isNodeArray, isElementArray, flatten };
+const shallowCompare = <P = {}>(prev: Partial<P>, next: Partial<P>) => {
+  for (const key in prev) {
+    if (!(key in next) || prev[key] !== next[key]) {
+      return true;
+    }
+  }
+
+  for (const key in next) {
+    if (!(key in prev) || next[key] !== prev[key]) {
+      return true;
+    }
+  }
+
+  return false;
+};
+
+export { isNodeArray, isElementArray, flatten, shallowCompare };
