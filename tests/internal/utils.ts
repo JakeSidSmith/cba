@@ -1,4 +1,9 @@
-import { flatten, isElementArray, isNodeArray } from '../../src/internal/utils';
+import {
+  flatten,
+  isElementArray,
+  isNodeArray,
+  shallowCompare,
+} from '../../src/internal/utils';
 
 describe('isElementArray', () => {
   it('should return true if the input is an array', () => {
@@ -32,5 +37,27 @@ describe('flatten', () => {
       '456',
       '789',
     ]);
+  });
+});
+
+describe('shallowCompare', () => {
+  it('should return false when 2 objects share the same values', () => {
+    expect(shallowCompare({ foo: 'bar' }, { foo: 'bar' })).toBe(false);
+  });
+
+  it('should return true when an objects value differs', () => {
+    expect(shallowCompare({ foo: 'bar' }, { foo: 'baz' })).toBe(true);
+  });
+
+  it('should return true when the second object is missing a key', () => {
+    expect(shallowCompare<{}>({ foo: 'bar', baz: null }, { foo: 'bar' })).toBe(
+      true
+    );
+  });
+
+  it('should return true when the first object is missing a key', () => {
+    expect(shallowCompare<{}>({ foo: 'bar' }, { foo: 'bar', baz: null })).toBe(
+      true
+    );
   });
 });
