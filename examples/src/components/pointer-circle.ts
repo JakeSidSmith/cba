@@ -7,15 +7,15 @@ export interface PointerCircleState {
 
 const PointerCircle: Component<{}, PointerCircleState> = (
   { x, y },
-  { canvas, onCreation, setState }
+  { canvas, onCreate, setOwnState }
 ) => {
-  onCreation(() => {
+  onCreate(() => {
     const onMouseMove = (event: MouseEvent) => {
       const rect = (document.getElementById(
         'app'
       ) as HTMLElement).getBoundingClientRect();
 
-      setState({
+      setOwnState({
         x: event.clientX - rect.left,
         y: event.clientY - rect.top,
       });

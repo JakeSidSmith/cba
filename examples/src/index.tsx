@@ -10,8 +10,8 @@ import { timeStore } from './time-store';
 
 const DENSITY = window.devicePixelRatio >= 2 ? 2 : 1;
 
-const App: Component = (_, { onCreation }) => {
-  onCreation(() => {
+const App: Component = (_, { onCreate }) => {
+  onCreate(() => {
     setInterval(() => {
       timeStore.setStoreState({
         time: new Date().toString(),

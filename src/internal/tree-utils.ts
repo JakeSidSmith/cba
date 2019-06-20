@@ -36,8 +36,8 @@ export function createTreeUtils(
 
     node.rendered = treeUtils.renderAndMountTree(element, node, parentNode);
 
-    if (node.onCreation) {
-      const onDestroy = node.onCreation();
+    if (node.onCreate) {
+      const onDestroy = node.onCreate();
 
       /* istanbul ignore else */
       if (onDestroy && !node.onDestroy) {

@@ -14,14 +14,14 @@ export function createNode<P = {}, S = {}>(
     previousProps: { ...element.props },
     previousState: {},
     rendered: undefined,
-    onCreation: undefined,
+    onCreate: undefined,
     onDestroy: undefined,
     onUpdate: undefined,
     shouldUpdate: undefined,
     childTransforms: parentNode ? [...parentNode.childTransforms] : [],
     injected: {
       canvas,
-      setState: state => {
+      setOwnState: state => {
         reRender(
           () => {
             node.state =
@@ -34,9 +34,9 @@ export function createNode<P = {}, S = {}>(
           }
         );
       },
-      onCreation: onCreation => {
-        if (!node.onCreation) {
-          node.onCreation = onCreation;
+      onCreate: onCreate => {
+        if (!node.onCreate) {
+          node.onCreate = onCreate;
         }
       },
       onUpdate: onUpdate => {

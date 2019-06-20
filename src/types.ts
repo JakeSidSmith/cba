@@ -4,13 +4,13 @@ export type WithChildren<P> = P & {
   children?: ReadonlyArray<Element>;
 };
 
-export type SetStateCallback<S = {}> = (state: Partial<S>) => Partial<S>;
-export type SetState<S = {}> = (
-  state: Partial<S> | SetStateCallback<S>
+export type SetOwnStateCallback<S = {}> = (state: Partial<S>) => Partial<S>;
+export type SetOwnState<S = {}> = (
+  state: Partial<S> | SetOwnStateCallback<S>
 ) => void;
 
 export type OnDestroyCallback = () => void;
-export type OnCreationCallback = () => void | OnDestroyCallback;
+export type OnCreateCallback = () => void | OnDestroyCallback;
 export type OnUpdateCallback<P = {}, S = {}> = (
   prevProps: P & Partial<S>
 ) => void;
@@ -21,8 +21,8 @@ export type ChildTransform = (canvas: Canvasimo) => void;
 
 export interface Injected<P = {}, S = {}> {
   canvas: Canvasimo;
-  setState: SetState<S>;
-  onCreation: (callback: OnCreationCallback) => void;
+  setOwnState: SetOwnState<S>;
+  onCreate: (callback: OnCreateCallback) => void;
   onUpdate: (callback: OnUpdateCallback<P, S>) => void;
   addChildTransform: (callback: ChildTransform) => void;
   shouldUpdate: (callback: ShouldUpdateCallback<P, S> | boolean) => void;
@@ -45,7 +45,7 @@ export interface Node<P = {}, S = {}> {
   previousState: Partial<S>;
   rendered: Node | ReadonlyArray<Node> | undefined;
   injected: Injected<P, S>;
-  onCreation: OnCreationCallback | undefined;
+  onCreate: OnCreateCallback | undefined;
   onDestroy: OnDestroyCallback | undefined;
   onUpdate: OnUpdateCallback<P, S> | undefined;
   shouldUpdate: ShouldUpdateCallback<P, S> | boolean | undefined;

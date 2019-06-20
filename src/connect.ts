@@ -10,11 +10,11 @@ export function connect<StoreProps = {}, OwnProps = {}, StoreState = {}>(
   ): Component<OwnProps, StoreProps> => {
     const ConnectedComponent: Component<OwnProps, StoreProps, Element> = (
       props,
-      { onCreation, setState }
+      { onCreate, setOwnState }
     ) => {
-      onCreation(() => {
+      onCreate(() => {
         return store.subscribe(newState => {
-          setState(mapStoreState(newState));
+          setOwnState(mapStoreState(newState));
         });
       });
 
