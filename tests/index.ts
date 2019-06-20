@@ -5,6 +5,7 @@ describe('cba', () => {
     'Canvas',
     'createContext',
     'createElement',
+    'createStore',
     'render',
   ];
 
