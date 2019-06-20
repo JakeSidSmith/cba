@@ -4,7 +4,7 @@ import { Element, Node } from '../types';
 import { createNode } from './create-node';
 import { destroyTree } from './destroy-tree';
 import { ReRender, TreeUtils } from './types';
-import { isElementArray, isNodeArray } from './utils';
+import { isElementArray, isNodeArray, shallowCompare } from './utils';
 
 export function createTreeUtils(
   rootCanvas: Canvasimo,
@@ -80,74 +80,104 @@ export function createTreeUtils(
     parentNode: Node | undefined
   ): Node<P, S> {
     if (next.type === prev.element.type) {
-      const { width, height } = rootCanvas.getSize();
+      if (
+        (typeof prev.shouldUpdate === 'undefined' &&
+          shallowCompare(prev.previousProps, next.props)) ||
+        (typeof prev.shouldUpdate === 'function' &&
+          prev.shouldUpdate(prev.previousProps)) ||
+        prev.shouldUpdate
+      ) {
+        const { width, height } = rootCanvas.getSize();
 
-      prev.injected.canvas
-        .setSize(width, height)
-        .setDensity(rootCanvas.getDensity());
+        prev.injected.canvas
+          .setSize(width, height)
+          .setDensity(rootCanvas.getDensity());
 
-      if (parentNode && parentNode.childTransforms.length) {
-        parentNode.childTransforms.forEach(childTransform => {
-          childTransform(prev.injected.canvas);
-        });
-      }
+        if (parentNode && parentNode.childTransforms.length) {
+          parentNode.childTransforms.forEach(childTransform => {
+            childTransform(prev.injected.canvas);
+          });
+        }
 
-      // Clear existing transforms before re-render
-      prev.childTransforms = parentNode ? [...parentNode.childTransforms] : [];
-      const rendered = next.type(
-        { ...prev.state, ...next.props },
-        prev.injected
-      );
+        // Clear existing transforms before re-render
+        prev.childTransforms = parentNode
+          ? [...parentNode.childTransforms]
+          : [];
+        const rendered = next.type(
+          { ...prev.state, ...next.props },
+          prev.injected
+        );
 
-      const { rendered: prevRendered } = prev;
+        const { rendered: prevRendered } = prev;
 
-      if (isElementArray(rendered)) {
-        if (isNodeArray(prevRendered)) {
-          prev.rendered = rendered.map((child, index) => {
-            const prevChild = prevRendered[index];
+        if (isElementArray(rendered)) {
+          if (isNodeArray(prevRendered)) {
+            prev.rendered = rendered.map((child, index) => {
+              const prevChild = prevRendered[index];
 
-            if (!prevChild) {
+              if (!prevChild) {
+                return treeUtils.mountTree(child, (prev as unknown) as Node);
+              }
+
+              return treeUtils.updateTree(
+                child,
+                prevChild,
+                (prev as unknown) as Node
+              );
+            });
+          } else {
+            destroyTree(prevRendered);
+
+            prev.rendered = rendered.map(child => {
               return treeUtils.mountTree(child, (prev as unknown) as Node);
-            }
+            });
+          }
+        } else if (rendered) {
+          if (isNodeArray(prevRendered) || !prevRendered) {
+            destroyTree(prevRendered);
 
+            prev.rendered = treeUtils.mountTree(
+              rendered,
+              (prev as unknown) as Node
+            );
+          } else {
+            prev.rendered = treeUtils.updateTree(
+              rendered,
+              prevRendered,
+              (prev as unknown) as Node
+            );
+          }
+        } else {
+          destroyTree(prevRendered);
+          prev.rendered = undefined;
+        }
+
+        if (prev.onUpdate) {
+          prev.onUpdate(prev.previousProps);
+        }
+
+        return prev;
+      } else {
+        if (isNodeArray(prev.rendered)) {
+          prev.rendered = prev.rendered.map(child => {
             return treeUtils.updateTree(
+              child.element,
               child,
-              prevChild,
               (prev as unknown) as Node
             );
           });
-        } else {
-          destroyTree(prevRendered);
-
-          prev.rendered = rendered.map(child => {
-            return treeUtils.mountTree(child, (prev as unknown) as Node);
-          });
-        }
-      } else if (rendered) {
-        if (isNodeArray(prevRendered) || !prevRendered) {
-          destroyTree(prevRendered);
-
-          prev.rendered = treeUtils.mountTree(
-            rendered,
-            (prev as unknown) as Node
-          );
-        } else {
+        } else if (prev.rendered) {
           prev.rendered = treeUtils.updateTree(
-            rendered,
-            prevRendered,
+            prev.rendered.element,
+            prev.rendered,
             (prev as unknown) as Node
           );
+        } else {
+          prev.rendered = undefined;
         }
-      } else {
-        destroyTree(prevRendered);
-        prev.rendered = undefined;
-      }
 
-      if (prev.onUpdate) {
-        prev.onUpdate(prev.previousProps);
+        return prev;
       }
-
-      return prev;
     } else {
       destroyTree(prev);
 
