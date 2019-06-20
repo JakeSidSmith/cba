@@ -398,11 +398,12 @@ describe('updateTree', () => {
     A.mockImplementationOnce(() => prevChild);
 
     const element = createElement(A, {});
+    const updatedElement = createElement<{}>(A, { foo: 'bar' });
     const prev = treeUtils.mountTree(element, undefined);
     const prevRendered = prev.rendered;
 
     const updateTreeSpy = jest.spyOn(treeUtils, 'updateTree');
-    treeUtils.updateTree(element, prev, undefined);
+    treeUtils.updateTree(updatedElement, prev, undefined);
 
     expect(updateTreeSpy).toHaveBeenCalledTimes(2);
     expect(updateTreeSpy).toHaveBeenCalledWith(nextChild, prevRendered, prev);
@@ -422,11 +423,12 @@ describe('updateTree', () => {
     A.mockImplementationOnce(() => prevChildren);
 
     const element = createElement(A, {});
+    const updatedElement = createElement<{}>(A, { foo: 'bar' });
     const prev = treeUtils.mountTree(element, undefined);
     const prevRendered = prev.rendered;
 
     const updateTreeSpy = jest.spyOn(treeUtils, 'updateTree');
-    treeUtils.updateTree(element, prev, undefined);
+    treeUtils.updateTree(updatedElement, prev, undefined);
 
     expect(updateTreeSpy).toHaveBeenCalledTimes(3);
     expect(updateTreeSpy).toHaveBeenCalledWith(
