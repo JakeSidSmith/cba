@@ -546,4 +546,79 @@ describe('updateTree', () => {
     expect(updateTreeSpy).toHaveBeenCalledTimes(2);
     expect(updateTreeSpy).toHaveBeenCalledWith(child, prevRendered, prev);
   });
+
+  it('should not re-render when shouldUpdate is set to false', () => {
+    const reRender = jest.fn();
+    const { canvas: rootCanvas } = createCanvas();
+    const treeUtils = createTreeUtils(rootCanvas, reRender);
+
+    rootCanvas.setSize(123, 456).setDensity(2);
+
+    const { canvas } = createCanvas();
+    const Foo = jest.fn();
+    const element = createElement(Foo, {});
+    const updatedElement = createElement<{}>(Foo, { bar: 'baz' });
+    const node = createNode(element, undefined, canvas, reRender);
+    node.shouldUpdate = false;
+
+    treeUtils.updateTree(updatedElement, node, undefined);
+
+    expect(Foo).not.toHaveBeenCalled();
+  });
+
+  it('should always re-render when shouldUpdate is set to true', () => {
+    const reRender = jest.fn();
+    const { canvas: rootCanvas } = createCanvas();
+    const treeUtils = createTreeUtils(rootCanvas, reRender);
+
+    rootCanvas.setSize(123, 456).setDensity(2);
+
+    const { canvas } = createCanvas();
+    const Foo = jest.fn();
+    const element = createElement(Foo, {});
+    const node = createNode(element, undefined, canvas, reRender);
+    node.shouldUpdate = true;
+
+    treeUtils.updateTree(element, node, undefined);
+
+    expect(Foo).toHaveBeenCalledTimes(1);
+  });
+
+  it('should re-render when a shouldUpdate function returns true', () => {
+    const reRender = jest.fn();
+    const { canvas: rootCanvas } = createCanvas();
+    const treeUtils = createTreeUtils(rootCanvas, reRender);
+
+    rootCanvas.setSize(123, 456).setDensity(2);
+
+    const { canvas } = createCanvas();
+    const Foo = jest.fn();
+    const element = createElement(Foo, {});
+    const node = createNode(element, undefined, canvas, reRender);
+
+    node.shouldUpdate = () => true;
+
+    treeUtils.updateTree(element, node, undefined);
+
+    expect(Foo).toHaveBeenCalledTimes(1);
+  });
+
+  it('should not re-render when a shouldUpdate function returns false', () => {
+    const reRender = jest.fn();
+    const { canvas: rootCanvas } = createCanvas();
+    const treeUtils = createTreeUtils(rootCanvas, reRender);
+
+    rootCanvas.setSize(123, 456).setDensity(2);
+
+    const { canvas } = createCanvas();
+    const Foo = jest.fn();
+    const element = createElement(Foo, {});
+    const node = createNode(element, undefined, canvas, reRender);
+
+    node.shouldUpdate = () => false;
+
+    treeUtils.updateTree(element, node, undefined);
+
+    expect(Foo).not.toHaveBeenCalled();
+  });
 });
