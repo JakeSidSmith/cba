@@ -10,8 +10,8 @@ import { createInjected } from './helpers/injected';
 
 const mockStore = {
   subscribe: jest.fn(),
-  setContext: jest.fn(),
-  getContext: jest.fn(),
+  setStoreState: jest.fn(),
+  getStoreState: jest.fn(),
 };
 const mockCreateStore = jest.fn().mockReturnValue(mockStore);
 
@@ -38,8 +38,8 @@ describe('createContext', () => {
       const context = { foo: 'not foo', baz: 7 };
       TestContext.Provider({ context }, createInjected());
 
-      expect(mockStore.setContext).toHaveBeenCalledTimes(1);
-      expect(mockStore.setContext).toHaveBeenCalledWith(context);
+      expect(mockStore.setStoreState).toHaveBeenCalledTimes(1);
+      expect(mockStore.setStoreState).toHaveBeenCalledWith(context);
     });
   });
 
@@ -68,7 +68,7 @@ describe('createContext', () => {
         injected
       );
 
-      expect(mockStore.getContext).toHaveBeenCalledTimes(1);
+      expect(mockStore.getStoreState).toHaveBeenCalledTimes(1);
     });
 
     it('calls onCreation in order to subscribe to the store, returning the un-subscriber', () => {

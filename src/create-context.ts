@@ -14,13 +14,13 @@ export function createContext<C = {}>(initialContext: C) {
     context,
     children,
   }) => {
-    store.setContext(context);
+    store.setStoreState(context);
 
     return children;
   };
 
   const Consumer: Component<ConsumerProps<C>, ConsumerState<C>> = (
-    { context = store.getContext(), children },
+    { context = store.getStoreState(), children },
     { onCreation, setState }
   ) => {
     onCreation(() => {

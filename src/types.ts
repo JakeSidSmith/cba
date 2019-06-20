@@ -52,13 +52,13 @@ export interface Node<P = {}, S = {}> {
   childTransforms: ChildTransform[];
 }
 
-export type ContextStoreSubscriber<C = {}> = (context: C) => void;
-export type ContextStoreUnSubscriber = () => void;
+export type StoreSubscriber<C = {}> = (context: C) => void;
+export type StoreUnSubscriber = () => void;
 
-export interface ContextStore<C = {}> {
-  subscribe: (callback: ContextStoreSubscriber<C>) => ContextStoreUnSubscriber;
-  setContext: (newContext: Partial<C>) => void;
-  getContext: () => C;
+export interface Store<C = {}> {
+  subscribe: (callback: StoreSubscriber<C>) => StoreUnSubscriber;
+  setStoreState: (newState: Partial<C>) => void;
+  getStoreState: () => C;
 }
 
 export interface ProviderProps<C = {}> {

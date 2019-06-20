@@ -1,11 +1,11 @@
-import { ContextStore, ContextStoreSubscriber } from '../types';
+import { Store, StoreSubscriber } from '../types';
 
-export function createStore<C = {}>(initialContext: C): ContextStore<C> {
+export function createStore<C = {}>(initialContext: C): Store<C> {
   let context = initialContext;
 
-  const subscribers: Array<ContextStoreSubscriber<C>> = [];
+  const subscribers: Array<StoreSubscriber<C>> = [];
 
-  const store: ContextStore<C> = {
+  const store: Store<C> = {
     subscribe: callback => {
       /* istanbul ignore else */
       if (subscribers.indexOf(callback) < 0) {
@@ -20,14 +20,14 @@ export function createStore<C = {}>(initialContext: C): ContextStore<C> {
         }
       };
     },
-    setContext: newContext => {
+    setStoreState: newContext => {
       context = { ...context, ...newContext };
 
       subscribers.forEach(subscriber => {
         subscriber(context);
       });
     },
-    getContext: () => {
+    getStoreState: () => {
       return context;
     },
   };

@@ -8,17 +8,17 @@ describe('createStore', () => {
 
   const store = createStore<StoreState>({ foo: 'bar' });
 
-  describe('getContext', () => {
+  describe('getStoreState', () => {
     it('returns the store state', () => {
-      expect(store.getContext()).toEqual({ foo: 'bar' });
+      expect(store.getStoreState()).toEqual({ foo: 'bar' });
     });
   });
 
-  describe('setContext', () => {
+  describe('setStoreState', () => {
     it('updates the existing store state', () => {
-      store.setContext({ baz: 7 });
+      store.setStoreState({ baz: 7 });
 
-      expect(store.getContext()).toEqual({ foo: 'bar', baz: 7 });
+      expect(store.getStoreState()).toEqual({ foo: 'bar', baz: 7 });
     });
   });
 
@@ -28,7 +28,7 @@ describe('createStore', () => {
 
       const unSubscribe = store.subscribe(listener);
 
-      store.setContext({ baz: 3 });
+      store.setStoreState({ baz: 3 });
 
       expect(listener).toHaveBeenCalledTimes(1);
       const [firstCall] = listener.mock.calls;
@@ -38,10 +38,10 @@ describe('createStore', () => {
 
       unSubscribe();
 
-      store.setContext({ foo: 'not bar' });
+      store.setStoreState({ foo: 'not bar' });
 
       expect(listener).toHaveBeenCalledTimes(1);
-      expect(store.getContext()).toEqual({ foo: 'not bar', baz: 3 });
+      expect(store.getStoreState()).toEqual({ foo: 'not bar', baz: 3 });
 
       // Covers un-subscribing when already un-subscribed
       unSubscribe();
