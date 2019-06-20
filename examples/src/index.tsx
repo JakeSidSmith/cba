@@ -2,6 +2,7 @@
 
 import cba, { Canvas, Component, render } from 'cba';
 import { DynamicRect } from './components/dynamic-rect';
+import { FPS } from './components/fps';
 import { PointerCircle } from './components/pointer-circle';
 import { Rect } from './components/rect';
 import { Time } from './components/time';
@@ -29,8 +30,9 @@ const App: Component<{}, TimeProps> = (
         </Rect>
         <DynamicRect x={50} y={50} width={200} height={200} fill="cyan" />
         <PointerCircle />
+        <Time />
+        <FPS />
       </Canvas>
-      <Time />
     </TimeContext.Provider>
   );
 };
