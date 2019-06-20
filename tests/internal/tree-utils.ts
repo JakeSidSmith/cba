@@ -491,4 +491,59 @@ describe('updateTree', () => {
 
     expect(Foo).not.toHaveBeenCalled();
   });
+
+  it('should not re-render the element if its props are the same, but update multiple children', () => {
+    const reRender = jest.fn();
+    const { canvas: rootCanvas } = createCanvas();
+    const treeUtils = createTreeUtils(rootCanvas, reRender);
+
+    const B = jest.fn();
+    const A = jest.fn();
+    const children = [createElement(B, {}), createElement(B, {})];
+    A.mockReturnValue(children);
+
+    const element = createElement(A, {});
+    const prev = treeUtils.mountTree(element, undefined);
+    A.mockClear();
+    const prevRendered = prev.rendered;
+
+    const updateTreeSpy = jest.spyOn(treeUtils, 'updateTree');
+    treeUtils.updateTree(element, prev, undefined);
+
+    expect(A).not.toHaveBeenCalled();
+    expect(updateTreeSpy).toHaveBeenCalledTimes(3);
+    expect(updateTreeSpy).toHaveBeenCalledWith(
+      children[0],
+      (prevRendered as ReadonlyArray<Node>)[0],
+      prev
+    );
+    expect(updateTreeSpy).toHaveBeenCalledWith(
+      children[1],
+      (prevRendered as ReadonlyArray<Node>)[1],
+      prev
+    );
+  });
+
+  it('should not re-render the element if its props are the same, but update a single child', () => {
+    const reRender = jest.fn();
+    const { canvas: rootCanvas } = createCanvas();
+    const treeUtils = createTreeUtils(rootCanvas, reRender);
+
+    const B = jest.fn();
+    const A = jest.fn();
+    const child = createElement(B, {});
+    A.mockReturnValue(child);
+
+    const element = createElement(A, {});
+    const prev = treeUtils.mountTree(element, undefined);
+    A.mockClear();
+    const prevRendered = prev.rendered;
+
+    const updateTreeSpy = jest.spyOn(treeUtils, 'updateTree');
+    treeUtils.updateTree(element, prev, undefined);
+
+    expect(A).not.toHaveBeenCalled();
+    expect(updateTreeSpy).toHaveBeenCalledTimes(2);
+    expect(updateTreeSpy).toHaveBeenCalledWith(child, prevRendered, prev);
+  });
 });
