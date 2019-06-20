@@ -474,4 +474,21 @@ describe('updateTree', () => {
     expect(mountTreeSpy).toHaveBeenCalledTimes(1);
     expect(mountTreeSpy).toHaveBeenCalledWith(nextChildren[1], prev);
   });
+
+  it('should not re-render the element if its props are the same', () => {
+    const reRender = jest.fn();
+    const { canvas: rootCanvas } = createCanvas();
+    const treeUtils = createTreeUtils(rootCanvas, reRender);
+
+    rootCanvas.setSize(123, 456).setDensity(2);
+
+    const { canvas } = createCanvas();
+    const Foo = jest.fn();
+    const element = createElement(Foo, {});
+    const node = createNode(element, undefined, canvas, reRender);
+
+    treeUtils.updateTree(element, node, undefined);
+
+    expect(Foo).not.toHaveBeenCalled();
+  });
 });
