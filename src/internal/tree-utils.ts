@@ -93,6 +93,9 @@ export function createTreeUtils(
           })) ||
         prev.shouldUpdate
       ) {
+        // Update element
+        prev.element = next;
+
         const { width, height } = rootCanvas.getSize();
 
         prev.injected.canvas
@@ -109,6 +112,7 @@ export function createTreeUtils(
         prev.childTransforms = parentNode
           ? [...parentNode.childTransforms]
           : [];
+
         const rendered = next.type(
           { ...prev.state, ...next.props },
           prev.injected
