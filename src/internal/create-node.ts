@@ -11,7 +11,7 @@ export function createNode<P = {}, S = {}>(
   const node: Node<P, S> = {
     element,
     state: {},
-    previousProps: element.props,
+    previousProps: { ...element.props },
     previousState: {},
     rendered: undefined,
     onCreation: undefined,
