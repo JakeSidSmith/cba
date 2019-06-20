@@ -81,6 +81,7 @@ export function createTreeUtils(
   ): Node<P, S> {
     if (next.type === prev.element.type) {
       if (
+        prev.shouldUpdate === true ||
         (typeof prev.shouldUpdate === 'undefined' &&
           shallowCompare(
             { ...prev.previousState, ...prev.previousProps },
@@ -90,8 +91,7 @@ export function createTreeUtils(
           prev.shouldUpdate({
             ...prev.previousState,
             ...prev.previousProps,
-          })) ||
-        prev.shouldUpdate
+          }))
       ) {
         // Update element
         prev.element = next;
