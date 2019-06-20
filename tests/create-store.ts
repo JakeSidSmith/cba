@@ -1,4 +1,4 @@
-import { createStore } from '../../src/internal/create-store';
+import { createStore } from '../src/create-store';
 
 describe('createStore', () => {
   interface StoreState {

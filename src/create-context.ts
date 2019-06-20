@@ -1,4 +1,4 @@
-import { createStore } from './internal/create-store';
+import { createStore } from './create-store';
 import {
   Component,
   ConsumerProps,

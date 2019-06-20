@@ -1,4 +1,4 @@
-import { Store, StoreSubscriber } from '../types';
+import { Store, StoreSubscriber } from './types';
 
 export function createStore<C = {}>(initialContext: C): Store<C> {
   let context = initialContext;

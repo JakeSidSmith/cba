@@ -5,7 +5,7 @@ import {
   createElement,
   Element,
 } from 'cba';
-import * as createStoreModule from '../src/internal/create-store';
+import * as createStoreModule from '../src/create-store';
 import { createInjected } from './helpers/injected';
 
 const mockStore = {
