@@ -14,6 +14,9 @@ export type OnCreationCallback = () => void | OnDestroyCallback;
 export type OnUpdateCallback<P = {}, S = {}> = (
   prevProps: P & Partial<S>
 ) => void;
+export type ShouldUpdateCallback<P = {}, S = {}> = (
+  previousProps: P & Partial<S>
+) => boolean;
 export type ChildTransform = (canvas: Canvasimo) => void;
 
 export interface Injected<P = {}, S = {}> {
@@ -22,6 +25,7 @@ export interface Injected<P = {}, S = {}> {
   onCreation: (callback: OnCreationCallback) => void;
   onUpdate: (callback: OnUpdateCallback<P, S>) => void;
   addChildTransform: (callback: ChildTransform) => void;
+  shouldUpdate: (callback: ShouldUpdateCallback<P, S> | boolean) => void;
 }
 
 export type Component<P = {}, S = {}, Children = unknown> = ((
@@ -43,6 +47,7 @@ export interface Node<P = {}, S = {}> {
   onCreation: OnCreationCallback | undefined;
   onDestroy: OnDestroyCallback | undefined;
   onUpdate: OnUpdateCallback<P, S> | undefined;
+  shouldUpdate: ShouldUpdateCallback<P, S> | boolean | undefined;
   childTransforms: ChildTransform[];
 }
 

@@ -15,6 +15,7 @@ export function createNode<P = {}, S = {}>(
     onCreation: undefined,
     onDestroy: undefined,
     onUpdate: undefined,
+    shouldUpdate: undefined,
     state: {},
     childTransforms: parentNode ? [...parentNode.childTransforms] : [],
     injected: {
@@ -40,6 +41,11 @@ export function createNode<P = {}, S = {}>(
       onUpdate: onUpdate => {
         if (!node.onUpdate) {
           node.onUpdate = onUpdate;
+        }
+      },
+      shouldUpdate: shouldUpdate => {
+        if (!node.shouldUpdate) {
+          node.shouldUpdate = shouldUpdate;
         }
       },
       addChildTransform: childTransform => {
