@@ -41,7 +41,8 @@ export interface Element<P = {}, S = {}> {
 export interface Node<P = {}, S = {}> {
   element: Element<P, S>;
   state: Partial<S>;
-  previousProps: P & Partial<S>;
+  previousProps: P;
+  previousState: Partial<S>;
   rendered: Node | ReadonlyArray<Node> | undefined;
   injected: Injected<P, S>;
   onCreation: OnCreationCallback | undefined;

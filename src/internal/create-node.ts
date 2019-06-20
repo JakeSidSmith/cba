@@ -10,13 +10,14 @@ export function createNode<P = {}, S = {}>(
 ) {
   const node: Node<P, S> = {
     element,
+    state: {},
     previousProps: element.props,
+    previousState: {},
     rendered: undefined,
     onCreation: undefined,
     onDestroy: undefined,
     onUpdate: undefined,
     shouldUpdate: undefined,
-    state: {},
     childTransforms: parentNode ? [...parentNode.childTransforms] : [],
     injected: {
       canvas,
@@ -29,7 +30,7 @@ export function createNode<P = {}, S = {}>(
                 : state;
           },
           () => {
-            node.previousProps = { ...node.state, ...element.props };
+            node.previousState = { ...node.state };
           }
         );
       },

@@ -82,9 +82,15 @@ export function createTreeUtils(
     if (next.type === prev.element.type) {
       if (
         (typeof prev.shouldUpdate === 'undefined' &&
-          shallowCompare(prev.previousProps, next.props)) ||
+          shallowCompare(
+            { ...prev.previousState, ...prev.previousProps },
+            { ...prev.state, ...next.props }
+          )) ||
         (typeof prev.shouldUpdate === 'function' &&
-          prev.shouldUpdate(prev.previousProps)) ||
+          prev.shouldUpdate({
+            ...prev.previousState,
+            ...prev.previousProps,
+          })) ||
         prev.shouldUpdate
       ) {
         const { width, height } = rootCanvas.getSize();
