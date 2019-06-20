@@ -11,7 +11,7 @@ describe('createNode', () => {
     const node = createNode(element, undefined, canvas, jest.fn());
 
     expect(node.element).toBe(element);
-    expect(node.previousProps).toBe(element.props);
+    expect(node.previousProps).toEqual(element.props);
     expect(node.rendered).toBe(undefined);
     expect(node.onCreation).toBe(undefined);
     expect(node.onDestroy).toBe(undefined);
@@ -53,17 +53,17 @@ describe('createNode', () => {
 
       const [beforeRender, afterRender] = reRender.mock.calls[0];
 
-      expect(node.previousProps).toBe(element.props);
+      expect(node.previousState).toEqual({});
       expect(node.state).toEqual({});
 
       beforeRender();
 
-      expect(node.previousProps).toBe(element.props);
+      expect(node.previousState).toEqual({});
       expect(node.state).toBe(newState);
 
       afterRender();
 
-      expect(node.previousProps).toEqual({ ...element.props, ...newState });
+      expect(node.previousState).toEqual(newState);
       expect(node.state).toBe(newState);
     });
   });
@@ -85,17 +85,17 @@ describe('createNode', () => {
 
     const [beforeRender, afterRender] = reRender.mock.calls[0];
 
-    expect(node.previousProps).toBe(element.props);
+    expect(node.previousState).toEqual({});
     expect(node.state).toEqual({ count: 0 });
 
     beforeRender();
 
-    expect(node.previousProps).toBe(element.props);
+    expect(node.previousState).toEqual({});
     expect(node.state).toEqual({ count: 1 });
 
     afterRender();
 
-    expect(node.previousProps).toEqual({ ...element.props, count: 1 });
+    expect(node.previousState).toEqual({ count: 1 });
     expect(node.state).toEqual({ count: 1 });
   });
 
