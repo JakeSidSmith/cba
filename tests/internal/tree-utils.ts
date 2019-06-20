@@ -196,12 +196,13 @@ describe('updateTree', () => {
     const { canvas } = createCanvas();
     const Foo = jest.fn();
     const element = createElement(Foo, {});
+    const updatedElement = createElement<{}>(Foo, { bar: 'baz' });
     const node = createNode(element, undefined, canvas, reRender);
 
     const setSizeSpy = jest.spyOn(canvas, 'setSize');
     const setDensitySpy = jest.spyOn(canvas, 'setDensity');
 
-    treeUtils.updateTree(element, node, undefined);
+    treeUtils.updateTree(updatedElement, node, undefined);
 
     expect(setSizeSpy).toHaveBeenCalledTimes(1);
     expect(setSizeSpy).toHaveBeenCalledWith(123, 456);
@@ -237,9 +238,10 @@ describe('updateTree', () => {
     const { canvas } = createCanvas();
     const Foo = jest.fn();
     const element = createElement(Foo, {});
+    const updatedElement = createElement<{}>(Foo, { bar: 'baz' });
     const node = createNode(element, parentNode, canvas, reRender);
 
-    treeUtils.updateTree(element, node, parentNode);
+    treeUtils.updateTree(updatedElement, node, parentNode);
 
     expect(transform1).toHaveBeenCalledTimes(1);
     expect(transform1).toHaveBeenLastCalledWith(canvas);
@@ -257,13 +259,16 @@ describe('updateTree', () => {
     const { canvas } = createCanvas();
     const Foo = jest.fn();
     const element = createElement(Foo, {});
+    const updatedElement = createElement<{}>(Foo, { bar: 'baz' });
     const node = createNode(element, undefined, canvas, reRender);
     node.onUpdate = jest.fn();
 
-    treeUtils.updateTree(element, node, undefined);
+    const previousProps = node.previousProps;
+
+    treeUtils.updateTree(updatedElement, node, undefined);
 
     expect(node.onUpdate).toHaveBeenCalledTimes(1);
-    expect(node.onUpdate).toHaveBeenCalledWith(node.previousProps);
+    expect(node.onUpdate).toHaveBeenCalledWith(previousProps);
   });
 
   it('should destroy undefined children if children were added, and mount each new child', () => {
@@ -275,13 +280,14 @@ describe('updateTree', () => {
     const A = jest.fn();
 
     const element = createElement(A, {});
+    const updatedElement = createElement<{}>(A, { bar: 'baz' });
     const prev = treeUtils.mountTree(element, undefined);
 
     const nextChildren = [createElement(B, {}), createElement(B, {})];
     A.mockImplementation(() => nextChildren);
 
     const mountTreeSpy = jest.spyOn(treeUtils, 'mountTree');
-    treeUtils.updateTree(element, prev, undefined);
+    treeUtils.updateTree(updatedElement, prev, undefined);
 
     expect(destroyTreeSpy).toHaveBeenCalledTimes(1);
     expect(destroyTreeSpy).toHaveBeenCalledWith(undefined);
@@ -304,11 +310,12 @@ describe('updateTree', () => {
     ]);
 
     const element = createElement(A, {});
+    const updatedElement = createElement<{}>(A, { bar: 'baz' });
     const prev = treeUtils.mountTree(element, undefined);
     const prevRendered = prev.rendered;
 
     const mountTreeSpy = jest.spyOn(treeUtils, 'mountTree');
-    treeUtils.updateTree(element, prev, undefined);
+    treeUtils.updateTree(updatedElement, prev, undefined);
 
     expect(destroyTreeSpy).toHaveBeenCalledTimes(1);
     expect(destroyTreeSpy).toHaveBeenCalledWith(prevRendered);
@@ -334,11 +341,12 @@ describe('updateTree', () => {
     ]);
 
     const element = createElement(A, {});
+    const updatedElement = createElement<{}>(A, { bar: 'baz' });
     const prev = treeUtils.mountTree(element, undefined);
     const prevRendered = prev.rendered;
 
     const mountTreeSpy = jest.spyOn(treeUtils, 'mountTree');
-    treeUtils.updateTree(element, prev, undefined);
+    treeUtils.updateTree(updatedElement, prev, undefined);
 
     expect(destroyTreeSpy).toHaveBeenCalledTimes(1);
     expect(destroyTreeSpy).toHaveBeenCalledWith(prevRendered);
@@ -360,12 +368,13 @@ describe('updateTree', () => {
     const nextChild = createElement(B, {});
 
     const element = createElement(A, {});
+    const updatedElement = createElement<{}>(A, { bar: 'baz' });
     const prev = treeUtils.mountTree(element, undefined);
     const prevRendered = prev.rendered;
 
     A.mockImplementationOnce(() => createElement(B, {}));
     const mountTreeSpy = jest.spyOn(treeUtils, 'mountTree');
-    treeUtils.updateTree(element, prev, undefined);
+    treeUtils.updateTree(updatedElement, prev, undefined);
 
     expect(destroyTreeSpy).toHaveBeenCalledTimes(1);
     expect(destroyTreeSpy).toHaveBeenCalledWith(prevRendered);
@@ -446,12 +455,13 @@ describe('updateTree', () => {
     A.mockImplementationOnce(() => prevChildren);
 
     const element = createElement(A, {});
+    const updatedElement = createElement<{}>(A, { bar: 'baz' });
     const prev = treeUtils.mountTree(element, undefined);
     const prevRendered = prev.rendered;
 
     const updateTreeSpy = jest.spyOn(treeUtils, 'updateTree');
     const mountTreeSpy = jest.spyOn(treeUtils, 'mountTree');
-    treeUtils.updateTree(element, prev, undefined);
+    treeUtils.updateTree(updatedElement, prev, undefined);
 
     expect(updateTreeSpy).toHaveBeenCalledTimes(2);
     expect(updateTreeSpy).toHaveBeenCalledWith(
