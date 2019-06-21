@@ -1,10 +1,10 @@
 import { Injected } from 'cba';
 import { createCanvas } from './canvas';
 
-export function createInjected<P = {}, S = {}>() {
+export function createInjected<GivenProps = {}, OwnProps = {}>() {
   const { canvas } = createCanvas();
 
-  const injected: Injected<P, S> = {
+  const injected: Injected<GivenProps, OwnProps> = {
     canvas,
     setOwnProps: jest.fn(),
     onCreate: jest.fn(),
