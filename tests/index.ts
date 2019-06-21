@@ -3,7 +3,7 @@ import * as cba from 'cba';
 describe('cba', () => {
   const exportedFunctions = [
     'Canvas',
-    'createContext',
+    'connect',
     'createElement',
     'createStore',
     'render',
