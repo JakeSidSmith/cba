@@ -86,10 +86,10 @@ describe('createContext', () => {
       expect(children[0]).toHaveBeenCalledTimes(1);
       expect(children[0]).toHaveBeenCalledWith(context);
 
-      expect(injected.onCreation).toHaveBeenCalledTimes(1);
+      expect(injected.onCreate).toHaveBeenCalledTimes(1);
       expect(returned).toBe(element);
 
-      const [onCreationCall] = (injected.onCreation as jest.Mock).mock.calls;
+      const [onCreationCall] = (injected.onCreate as jest.Mock).mock.calls;
 
       expect(onCreationCall.length).toBe(1);
       expect(typeof onCreationCall[0]).toBe('function');

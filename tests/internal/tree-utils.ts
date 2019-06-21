@@ -70,10 +70,10 @@ describe('mountTree', () => {
     const treeUtils = createTreeUtils(rootCanvas, reRender);
 
     const onDestroyCallback = jest.fn();
-    const onCreationCallback = jest.fn().mockReturnValue(onDestroyCallback);
+    const onCreateCallback = jest.fn().mockReturnValue(onDestroyCallback);
 
-    const Foo: Component = (_, { onCreation }) => {
-      onCreation(onCreationCallback);
+    const Foo: Component = (_, { onCreate }) => {
+      onCreate(onCreateCallback);
       return undefined;
     };
     const element = createElement(Foo, {});

@@ -13,14 +13,14 @@ describe('createNode', () => {
     expect(node.element).toBe(element);
     expect(node.previousProps).toEqual(element.props);
     expect(node.rendered).toBe(undefined);
-    expect(node.onCreation).toBe(undefined);
+    expect(node.onCreate).toBe(undefined);
     expect(node.onDestroy).toBe(undefined);
     expect(node.onUpdate).toBe(undefined);
     expect(node.state).toEqual({});
     expect(node.childTransforms).toEqual([]);
     expect(node.injected.canvas).toBe(canvas);
-    expect(typeof node.injected.onCreation).toBe('function');
     expect(typeof node.injected.setOwnProps).toBe('function');
+    expect(typeof node.injected.onCreate).toBe('function');
     expect(typeof node.injected.onUpdate).toBe('function');
     expect(typeof node.injected.addChildTransform).toBe('function');
   });
@@ -105,14 +105,14 @@ describe('createNode', () => {
       const element = createElement(Foo, { foo: 'bar' });
       const node = createNode(element, undefined, canvas, jest.fn());
 
-      const firstOnCreation = jest.fn();
-      const secondOnCreation = jest.fn();
+      const firstOnCreate = jest.fn();
+      const secondOnCreate = jest.fn();
 
-      expect(node.onCreation).toBe(undefined);
-      node.injected.onCreation(firstOnCreation);
-      expect(node.onCreation).toBe(firstOnCreation);
-      node.injected.onCreation(secondOnCreation);
-      expect(node.onCreation).toBe(firstOnCreation);
+      expect(node.onCreate).toBe(undefined);
+      node.injected.onCreate(firstOnCreate);
+      expect(node.onCreate).toBe(firstOnCreate);
+      node.injected.onCreate(secondOnCreate);
+      expect(node.onCreate).toBe(firstOnCreate);
     });
   });
 
