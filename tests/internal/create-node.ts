@@ -99,8 +99,8 @@ describe('createNode', () => {
     expect(node.state).toEqual({ count: 1 });
   });
 
-  describe('onCreation', () => {
-    it('sets the nodes onCreation property if not already set', () => {
+  describe('onCreate', () => {
+    it('sets the nodes onCreate property if not already set', () => {
       const Foo: Component = () => undefined;
       const element = createElement(Foo, { foo: 'bar' });
       const node = createNode(element, undefined, canvas, jest.fn());
