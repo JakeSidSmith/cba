@@ -1,11 +1,11 @@
 import { flatten } from './internal/utils';
 import { Component, Element } from './types';
 
-export function createElement<P = {}, S = {}>(
-  type: Component<P, S>,
-  props: P,
+export function createElement<GivenProps = {}, OwnProps = {}>(
+  type: Component<GivenProps, OwnProps>,
+  props: GivenProps,
   ...children: ReadonlyArray<Element>
-): Element<P, S> {
+): Element<GivenProps, OwnProps> {
   return {
     type,
     props: {

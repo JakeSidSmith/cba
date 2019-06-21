@@ -1,54 +1,62 @@
 import Canvasimo from 'canvasimo';
 
-export type WithChildren<P> = P & {
+export type WithChildren<GivenProps> = GivenProps & {
   children?: ReadonlyArray<Element>;
 };
 
-export type SetOwnStateCallback<S = {}> = (state: Partial<S>) => Partial<S>;
-export type SetOwnState<S = {}> = (
-  state: Partial<S> | SetOwnStateCallback<S>
+export type SetOwnStateCallback<OwnProps = {}> = (
+  state: Partial<OwnProps>
+) => Partial<OwnProps>;
+export type SetOwnState<OwnProps = {}> = (
+  state: Partial<OwnProps> | SetOwnStateCallback<OwnProps>
 ) => void;
 
 export type OnDestroyCallback = () => void;
 export type OnCreateCallback = () => void | OnDestroyCallback;
-export type OnUpdateCallback<P = {}, S = {}> = (
-  prevProps: P & Partial<S>
+export type OnUpdateCallback<GivenProps = {}, OwnProps = {}> = (
+  prevProps: GivenProps & Partial<OwnProps>
 ) => void;
-export type ShouldUpdateCallback<P = {}, S = {}> = (
-  previousProps: P & Partial<S>
+export type ShouldUpdateCallback<GivenProps = {}, OwnProps = {}> = (
+  previousProps: GivenProps & Partial<OwnProps>
 ) => boolean;
 export type ChildTransform = (canvas: Canvasimo) => void;
 
-export interface Injected<P = {}, S = {}> {
+export interface Injected<GivenProps = {}, OwnProps = {}> {
   canvas: Canvasimo;
-  setOwnState: SetOwnState<S>;
+  setOwnState: SetOwnState<OwnProps>;
   onCreate: (callback: OnCreateCallback) => void;
-  onUpdate: (callback: OnUpdateCallback<P, S>) => void;
+  onUpdate: (callback: OnUpdateCallback<GivenProps, OwnProps>) => void;
   addChildTransform: (callback: ChildTransform) => void;
-  shouldUpdate: (callback: ShouldUpdateCallback<P, S> | boolean) => void;
+  shouldUpdate: (
+    callback: ShouldUpdateCallback<GivenProps, OwnProps> | boolean
+  ) => void;
 }
 
-export type Component<P = {}, S = {}, Children = unknown> = ((
-  props: P & Partial<S> & { children?: ReadonlyArray<Children> },
-  injected: Injected<P, S>
+export type Component<GivenProps = {}, OwnProps = {}, Children = unknown> = ((
+  props: GivenProps &
+    Partial<OwnProps> & { children?: ReadonlyArray<Children> },
+  injected: Injected<GivenProps, OwnProps>
 ) => Element | ReadonlyArray<Element> | undefined) & { name?: string };
 
-export interface Element<P = {}, S = {}> {
-  type: Component<P, S>;
-  props: WithChildren<P & Partial<S>>;
+export interface Element<GivenProps = {}, OwnProps = {}> {
+  type: Component<GivenProps, OwnProps>;
+  props: WithChildren<GivenProps & Partial<OwnProps>>;
 }
 
-export interface Node<P = {}, S = {}> {
-  element: Element<P, S>;
-  state: Partial<S>;
-  previousProps: P;
-  previousState: Partial<S>;
+export interface Node<GivenProps = {}, OwnProps = {}> {
+  element: Element<GivenProps, OwnProps>;
+  state: Partial<OwnProps>;
+  previousProps: GivenProps;
+  previousState: Partial<OwnProps>;
   rendered: Node | ReadonlyArray<Node> | undefined;
-  injected: Injected<P, S>;
+  injected: Injected<GivenProps, OwnProps>;
   onCreate: OnCreateCallback | undefined;
   onDestroy: OnDestroyCallback | undefined;
-  onUpdate: OnUpdateCallback<P, S> | undefined;
-  shouldUpdate: ShouldUpdateCallback<P, S> | boolean | undefined;
+  onUpdate: OnUpdateCallback<GivenProps, OwnProps> | undefined;
+  shouldUpdate:
+    | ShouldUpdateCallback<GivenProps, OwnProps>
+    | boolean
+    | undefined;
   childTransforms: ChildTransform[];
 }
 

@@ -2,13 +2,13 @@ import Canvasimo from 'canvasimo';
 import { Element, Node } from '../types';
 import { ReRender } from './types';
 
-export function createNode<P = {}, S = {}>(
-  element: Element<P, S>,
+export function createNode<GivenProps = {}, OwnProps = {}>(
+  element: Element<GivenProps, OwnProps>,
   parentNode: Node | undefined,
   canvas: Canvasimo,
   reRender: ReRender
 ) {
-  const node: Node<P, S> = {
+  const node: Node<GivenProps, OwnProps> = {
     element,
     state: {},
     previousProps: { ...element.props },

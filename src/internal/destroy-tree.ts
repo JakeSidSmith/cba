@@ -1,8 +1,8 @@
 import { Node } from '../types';
 import { isNodeArray } from './utils';
 
-export function destroyTree<P = {}, S = {}>(
-  node: Node<P, S> | ReadonlyArray<Node> | undefined
+export function destroyTree<GivenProps = {}, OwnProps = {}>(
+  node: Node<GivenProps, OwnProps> | ReadonlyArray<Node> | undefined
 ): void {
   if (!node) {
     return;

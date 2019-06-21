@@ -2,7 +2,10 @@ import Canvasimo from 'canvasimo';
 import { Node } from '../types';
 import { isNodeArray } from './utils';
 
-export function drawTree<P = {}>(node: Node<P>, rootCanvas: Canvasimo): void {
+export function drawTree<GivenProps = {}>(
+  node: Node<GivenProps>,
+  rootCanvas: Canvasimo
+): void {
   const element = node.injected.canvas.getElement();
   rootCanvas.drawImage(element, 0, 0);
 

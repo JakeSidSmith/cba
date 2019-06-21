@@ -6,18 +6,18 @@ export type ReRender = (
 ) => void;
 
 export interface TreeUtils {
-  mountTree: <P = {}, S = {}>(
-    element: Element<P, S>,
+  mountTree: <GivenProps = {}, OwnProps = {}>(
+    element: Element<GivenProps, OwnProps>,
     parentNode: Node | undefined
-  ) => Node<P, S>;
-  renderAndMountTree: <P = {}, S = {}>(
-    element: Element<P, S>,
-    node: Node<P, S>,
+  ) => Node<GivenProps, OwnProps>;
+  renderAndMountTree: <GivenProps = {}, OwnProps = {}>(
+    element: Element<GivenProps, OwnProps>,
+    node: Node<GivenProps, OwnProps>,
     parentNode: Node | undefined
   ) => Node | ReadonlyArray<Node> | undefined;
-  updateTree: <P = {}, S = {}>(
-    next: Element<P, S>,
-    prev: Node<P, S>,
+  updateTree: <GivenProps = {}, OwnProps = {}>(
+    next: Element<GivenProps, OwnProps>,
+    prev: Node<GivenProps, OwnProps>,
     parentNode: Node | undefined
-  ) => Node<P, S>;
+  ) => Node<GivenProps, OwnProps>;
 }

@@ -1,25 +1,25 @@
 import { createElement } from './create-element';
 import { Component, Element, Store } from './types';
 
-export function connect<StoreProps = {}, OwnProps = {}, StoreState = {}>(
+export function connect<StoreProps = {}, GivenProps = {}, StoreState = {}>(
   store: Store<StoreState>,
-  mapStoreState: (state: StoreState) => StoreProps
+  mapStoreStateToProps: (state: StoreState) => StoreProps
 ) {
   return (
-    component: Component<StoreProps & OwnProps>
-  ): Component<OwnProps, StoreProps> => {
-    const ConnectedComponent: Component<OwnProps, StoreProps, Element> = (
+    component: Component<StoreProps & GivenProps>
+  ): Component<GivenProps, StoreProps> => {
+    const ConnectedComponent: Component<GivenProps, StoreProps> = (
       props,
       { onCreate, setOwnState }
     ) => {
       onCreate(() => {
         return store.subscribe(newState => {
-          setOwnState(mapStoreState(newState));
+          setOwnState(mapStoreStateToProps(newState));
         });
       });
 
       return (createElement(component, {
-        ...mapStoreState(store.getStoreState()),
+        ...mapStoreStateToProps(store.getStoreState()),
         ...props,
       }) as unknown) as Element;
     };

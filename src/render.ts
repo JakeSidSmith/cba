@@ -4,7 +4,10 @@ import { createTreeUtils } from './internal/tree-utils';
 import { TreeUtils } from './internal/types';
 import { Element, Node } from './types';
 
-export function render<P = {}>(element: Element<P>, root: HTMLElement) {
+export function render<GivenProps = {}>(
+  element: Element<GivenProps>,
+  root: HTMLElement
+) {
   const rootCanvasElement = document.createElement('canvas');
   const rootCanvas = new Canvasimo(rootCanvasElement);
 
@@ -12,7 +15,7 @@ export function render<P = {}>(element: Element<P>, root: HTMLElement) {
   const queuedAfterRender: Array<() => void> = [];
 
   let queuedRender: number | undefined;
-  let tree: Node<P>;
+  let tree: Node<GivenProps>;
   let treeUtils: TreeUtils;
 
   const reRender = (beforeRender?: () => void, afterRender?: () => void) => {
@@ -53,7 +56,7 @@ export function render<P = {}>(element: Element<P>, root: HTMLElement) {
   };
 
   treeUtils = createTreeUtils(rootCanvas, reRender);
-  tree = treeUtils.mountTree<P>(element, undefined);
+  tree = treeUtils.mountTree<GivenProps>(element, undefined);
   reRender();
 
   root.appendChild(rootCanvasElement);

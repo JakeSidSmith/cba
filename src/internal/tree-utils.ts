@@ -12,10 +12,10 @@ export function createTreeUtils(
 ): TreeUtils {
   const treeUtils = {} as TreeUtils;
 
-  treeUtils.mountTree = function mountTree<P = {}, S = {}>(
-    element: Element<P, S>,
+  treeUtils.mountTree = function mountTree<GivenProps = {}, OwnProps = {}>(
+    element: Element<GivenProps, OwnProps>,
     parentNode: Node | undefined
-  ): Node<P, S> {
+  ): Node<GivenProps, OwnProps> {
     let canvasElement: HTMLCanvasElement;
     let canvas: Canvasimo;
 
@@ -48,9 +48,12 @@ export function createTreeUtils(
     return node;
   };
 
-  treeUtils.renderAndMountTree = function renderAndMountTree<P = {}, S = {}>(
-    element: Element<P, S>,
-    node: Node<P, S>,
+  treeUtils.renderAndMountTree = function renderAndMountTree<
+    GivenProps = {},
+    OwnProps = {}
+  >(
+    element: Element<GivenProps, OwnProps>,
+    node: Node<GivenProps, OwnProps>,
     parentNode: Node | undefined
   ): Node | ReadonlyArray<Node> | undefined {
     if (parentNode && parentNode.childTransforms.length) {
@@ -74,11 +77,11 @@ export function createTreeUtils(
     return undefined;
   };
 
-  treeUtils.updateTree = function updateTree<P = {}, S = {}>(
-    next: Element<P, S>,
-    prev: Node<P, S>,
+  treeUtils.updateTree = function updateTree<GivenProps = {}, OwnProps = {}>(
+    next: Element<GivenProps, OwnProps>,
+    prev: Node<GivenProps, OwnProps>,
     parentNode: Node | undefined
-  ): Node<P, S> {
+  ): Node<GivenProps, OwnProps> {
     if (next.type === prev.element.type) {
       if (
         prev.shouldUpdate === true ||

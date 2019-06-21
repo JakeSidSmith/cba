@@ -1,24 +1,27 @@
 import { Element, Node } from '../types';
 
-const isNodeArray = <P = {}, S = {}>(
-  node: Node<P, S> | ReadonlyArray<Node> | undefined
+const isNodeArray = <GivenProps = {}, OwnProps = {}>(
+  node: Node<GivenProps, OwnProps> | ReadonlyArray<Node> | undefined
 ): node is ReadonlyArray<Node> => Array.isArray(node);
 
-const isElementArray = <P = {}>(
-  element: Element<P> | ReadonlyArray<Element> | undefined
+const isElementArray = <GivenProps = {}>(
+  element: Element<GivenProps> | ReadonlyArray<Element> | undefined
 ): element is ReadonlyArray<Element> => Array.isArray(element);
 
-const flatten = <P>(
-  items: ReadonlyArray<P | ReadonlyArray<P>>
-): ReadonlyArray<P> =>
-  items.reduce<ReadonlyArray<P>>((memo, item) => {
+const flatten = <GivenProps>(
+  items: ReadonlyArray<GivenProps | ReadonlyArray<GivenProps>>
+): ReadonlyArray<GivenProps> =>
+  items.reduce<ReadonlyArray<GivenProps>>((memo, item) => {
     const flat = Array.isArray(item)
       ? [...memo, ...flatten(item)]
       : [...memo, item];
     return flat;
   }, []);
 
-const shallowCompare = <P = {}>(prev: Partial<P>, next: Partial<P>) => {
+const shallowCompare = <GivenProps = {}>(
+  prev: Partial<GivenProps>,
+  next: Partial<GivenProps>
+) => {
   for (const key in prev) {
     if (!(key in next) || prev[key] !== next[key]) {
       return true;
