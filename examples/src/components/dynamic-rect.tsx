@@ -10,10 +10,10 @@ interface DynamicRectState {
 
 const DynamicRect: Component<RectProps, DynamicRectState> = (
   { x, y, width, height, fill, children, rotation = 0 },
-  { canvas, setOwnState, onCreate, onUpdate }
+  { canvas, setOwnProps, onCreate, onUpdate }
 ) => {
   const onChange = () => {
-    setOwnState(state => ({
+    setOwnProps(state => ({
       rotation: (state.rotation || 0) + canvas.getRadiansFromDegrees(1),
     }));
   };

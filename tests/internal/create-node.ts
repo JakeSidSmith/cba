@@ -19,8 +19,8 @@ describe('createNode', () => {
     expect(node.state).toEqual({});
     expect(node.childTransforms).toEqual([]);
     expect(node.injected.canvas).toBe(canvas);
-    expect(typeof node.injected.setState).toBe('function');
     expect(typeof node.injected.onCreation).toBe('function');
+    expect(typeof node.injected.setOwnProps).toBe('function');
     expect(typeof node.injected.onUpdate).toBe('function');
     expect(typeof node.injected.addChildTransform).toBe('function');
   });
@@ -37,7 +37,7 @@ describe('createNode', () => {
     expect(node.childTransforms).toEqual(parentNode.childTransforms);
   });
 
-  describe('setState', () => {
+  describe('setOwnProps', () => {
     it('should update the nodes state with the provided object', () => {
       const Foo: Component = () => undefined;
       const reRender = jest.fn();
@@ -47,7 +47,7 @@ describe('createNode', () => {
         bar: '456',
       };
 
-      node.injected.setState(newState);
+      node.injected.setOwnProps(newState);
 
       expect(reRender).toHaveBeenCalledTimes(1);
 
@@ -77,7 +77,7 @@ describe('createNode', () => {
       count: 0,
     };
 
-    node.injected.setState(({ count = 7 }) => ({
+    node.injected.setOwnProps(({ count = 7 }) => ({
       count: count + 1,
     }));
 

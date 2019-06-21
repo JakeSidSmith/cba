@@ -104,11 +104,11 @@ describe('createContext', () => {
       expect(subscribeCall.length).toBe(1);
       expect(typeof subscribeCall[0]).toBe('function');
 
-      expect(injected.setState).toHaveBeenCalledTimes(0);
+      expect(injected.setOwnProps).toHaveBeenCalledTimes(0);
 
       subscribeCall[0]();
 
-      expect(injected.setState).toHaveBeenCalledTimes(1);
+      expect(injected.setOwnProps).toHaveBeenCalledTimes(1);
     });
   });
 });

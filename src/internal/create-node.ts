@@ -21,7 +21,7 @@ export function createNode<GivenProps = {}, OwnProps = {}>(
     childTransforms: parentNode ? [...parentNode.childTransforms] : [],
     injected: {
       canvas,
-      setOwnState: state => {
+      setOwnProps: state => {
         reRender(
           () => {
             node.state =

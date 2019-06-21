@@ -6,8 +6,8 @@ export function createInjected<P = {}, S = {}>() {
 
   const injected: Injected<P, S> = {
     canvas,
-    setState: jest.fn(),
     onCreation: jest.fn(),
+    setOwnProps: jest.fn(),
     onUpdate: jest.fn(),
     shouldUpdate: jest.fn(),
     addChildTransform: jest.fn(),

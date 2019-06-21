@@ -4,11 +4,11 @@ export type WithChildren<GivenProps> = GivenProps & {
   children?: ReadonlyArray<Element>;
 };
 
-export type SetOwnStateCallback<OwnProps = {}> = (
+export type SetOwnPropsCallback<OwnProps = {}> = (
   state: Partial<OwnProps>
 ) => Partial<OwnProps>;
-export type SetOwnState<OwnProps = {}> = (
-  state: Partial<OwnProps> | SetOwnStateCallback<OwnProps>
+export type SetOwnProps<OwnProps = {}> = (
+  state: Partial<OwnProps> | SetOwnPropsCallback<OwnProps>
 ) => void;
 
 export type OnDestroyCallback = () => void;
@@ -23,7 +23,7 @@ export type ChildTransform = (canvas: Canvasimo) => void;
 
 export interface Injected<GivenProps = {}, OwnProps = {}> {
   canvas: Canvasimo;
-  setOwnState: SetOwnState<OwnProps>;
+  setOwnProps: SetOwnProps<OwnProps>;
   onCreate: (callback: OnCreateCallback) => void;
   onUpdate: (callback: OnUpdateCallback<GivenProps, OwnProps>) => void;
   addChildTransform: (callback: ChildTransform) => void;
