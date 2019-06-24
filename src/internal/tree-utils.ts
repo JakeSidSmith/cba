@@ -1,6 +1,6 @@
 import Canvasimo from 'canvasimo';
-import { Canvas } from '../canvas';
 import { Element, Node } from '../types';
+import { CANVAS_TYPE } from './constants';
 import { createNode } from './create-node';
 import { destroyTree } from './destroy-tree';
 import { ReRender, TreeUtils } from './types';
@@ -19,8 +19,7 @@ export function createTreeUtils(
     let canvasElement: HTMLCanvasElement;
     let canvas: Canvasimo;
 
-    // @ts-ignore
-    if (element.type === Canvas) {
+    if (element.type._type === CANVAS_TYPE) {
       canvasElement = rootCanvas.getElement();
       canvas = rootCanvas;
     } else {

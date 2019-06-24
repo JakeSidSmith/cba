@@ -1,4 +1,5 @@
 import Canvasimo from 'canvasimo';
+import { CANVAS_TYPE } from './internal/constants';
 
 export type WithChildren<GivenProps> = GivenProps & {
   children?: ReadonlyArray<Element>;
@@ -32,11 +33,21 @@ export interface Injected<GivenProps = {}, OwnProps = {}> {
   ) => void;
 }
 
+export interface ComponentProperties {
+  _type?: string;
+  name?: string;
+}
+
 export type Component<GivenProps = {}, OwnProps = {}, Children = unknown> = ((
   props: GivenProps &
     Partial<OwnProps> & { children?: ReadonlyArray<Children> },
   injected: Injected<GivenProps, OwnProps>
-) => Element | ReadonlyArray<Element> | undefined) & { name?: string };
+) => Element | ReadonlyArray<Element> | undefined) &
+  ComponentProperties;
+
+export interface CanvasComponent extends Component<CanvasProps, {}, Element> {
+  _type: typeof CANVAS_TYPE;
+}
 
 export interface Element<GivenProps = {}, OwnProps = {}> {
   type: Component<GivenProps, OwnProps>;
