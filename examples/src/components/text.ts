@@ -5,6 +5,7 @@ export interface TextProps {
   y: number;
   fill: string;
   maxWidth?: number;
+  children?: ReadonlyArray<string | undefined>;
 }
 
 const Text: Component<TextProps> = (

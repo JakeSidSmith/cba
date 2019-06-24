@@ -1,5 +1,9 @@
 import Canvasimo from 'canvasimo';
-import { CANVAS_TYPE } from './internal/constants';
+import {
+  CANVAS_TYPE,
+  CONTEXT_CONSUMER_TYPE,
+  CONTEXT_PROVIDER_TYPE,
+} from './internal/constants';
 
 export type WithChildren<GivenProps> = GivenProps & {
   children?: ReadonlyArray<Element>;
@@ -38,15 +42,36 @@ export interface ComponentProperties {
   name?: string;
 }
 
-export type Component<GivenProps = {}, OwnProps = {}, Children = unknown> = ((
-  props: GivenProps &
-    Partial<OwnProps> & { children?: ReadonlyArray<Children> },
-  injected: Injected<GivenProps, OwnProps>
-) => Element | ReadonlyArray<Element> | undefined) &
-  ComponentProperties;
+export interface Component<GivenProps = {}, OwnProps = {}>
+  extends ComponentProperties {
+  (
+    props: GivenProps & Partial<OwnProps>,
+    injected: Injected<GivenProps, OwnProps>
+  ): Element | ReadonlyArray<Element> | undefined;
+}
 
-export interface CanvasComponent extends Component<CanvasProps, {}, Element> {
+export interface CanvasComponent extends Component<CanvasProps> {
   _type: typeof CANVAS_TYPE;
+}
+
+export interface ContextProviderComponent<Context = {}>
+  extends Component<Context> {
+  (context: Context, setContext: (context: Context) => void):
+    | Element
+    | ReadonlyArray<Element>
+    | undefined;
+  _type: typeof CONTEXT_PROVIDER_TYPE;
+  _contextId: number;
+}
+
+export interface ContextConsumerComponent<Context = {}>
+  extends Component<ContextConsumerProps<Context>> {
+  (props: ContextConsumerProps<Context>, getContext: () => Context):
+    | Element
+    | ReadonlyArray<Element>
+    | undefined;
+  _type: typeof CONTEXT_CONSUMER_TYPE;
+  _contextId: number;
 }
 
 export interface Element<GivenProps = {}, OwnProps = {}> {
@@ -84,4 +109,13 @@ export interface CanvasProps {
   width: number;
   height: number;
   density?: number;
+  children?: ReadonlyArray<Element>;
+}
+
+export type ContextConsumerChild<Context = {}> = (
+  context: Context
+) => Element | ReadonlyArray<Element> | undefined;
+
+export interface ContextConsumerProps<Context = {}> {
+  children?: [ContextConsumerChild<Context> | undefined];
 }
