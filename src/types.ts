@@ -58,10 +58,10 @@ export interface CanvasComponent<GivenProps = {}, OwnProps = {}>
 
 export interface ContextProviderComponent<Context = {}>
   extends BaseComponent<Context> {
-  (context: Context, setContext: (context: Context) => void):
-    | Element
-    | ReadonlyArray<Element>
-    | undefined;
+  (
+    context: Context,
+    setContext: (contextId: number, context: Context) => void
+  ): Element | ReadonlyArray<Element> | undefined;
   _type: typeof CONTEXT_PROVIDER_TYPE;
   _contextId: number;
 }

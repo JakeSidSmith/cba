@@ -1,6 +1,10 @@
 import Canvasimo from 'canvasimo';
 import { Element, Node } from '../types';
-import { CANVAS_TYPE, CONTEXT_CONSUMER_TYPE, CONTEXT_PROVIDER_TYPE } from './constants';
+import {
+  CANVAS_TYPE,
+  CONTEXT_CONSUMER_TYPE,
+  CONTEXT_PROVIDER_TYPE,
+} from './constants';
 import { createNode } from './create-node';
 import { destroyTree } from './destroy-tree';
 import { ReRender, TreeUtils } from './types';
@@ -10,7 +14,15 @@ export function createTreeUtils(
   rootCanvas: Canvasimo,
   reRender: ReRender
 ): TreeUtils {
+  const contexts: Record<string, unknown> = {};
   const treeUtils = {} as TreeUtils;
+
+  const setContext = (contextId: number, context: unknown) => {
+    contexts[contextId] = {
+      ...contexts[contextId],
+      ...context,
+    };
+  };
 
   treeUtils.mountTree = function mountTree<GivenProps = {}, OwnProps = {}>(
     element: Element<GivenProps, OwnProps>,
@@ -64,9 +76,11 @@ export function createTreeUtils(
     let rendered: Element | ReadonlyArray<Element> | undefined;
 
     if (element.type._type === CONTEXT_PROVIDER_TYPE) {
-
+      rendered = element.type(element.props, setContext);
     } else if (element.type._type === CONTEXT_CONSUMER_TYPE) {
-
+      rendered = element.type(element.props, contexts[
+        element.type._contextId
+      ] as GivenProps);
     } else {
       rendered = element.type(element.props, node.injected);
     }
@@ -126,14 +140,13 @@ export function createTreeUtils(
         let rendered: Element | ReadonlyArray<Element> | undefined;
 
         if (next.type._type === CONTEXT_PROVIDER_TYPE) {
-
+          rendered = next.type(next.props, setContext);
         } else if (next.type._type === CONTEXT_CONSUMER_TYPE) {
-
+          rendered = next.type(next.props, contexts[
+            next.type._contextId
+          ] as GivenProps);
         } else {
-          rendered = next.type(
-            { ...prev.state, ...next.props },
-            prev.injected
-          );
+          rendered = next.type({ ...prev.state, ...next.props }, prev.injected);
         }
 
         const { rendered: prevRendered } = prev;
