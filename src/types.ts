@@ -9,6 +9,11 @@ export type WithChildren<GivenProps> = GivenProps & {
   children?: ReadonlyArray<Element>;
 };
 
+export type NoChildren<Props extends {}> = Pick<
+  Props,
+  Exclude<keyof Props, 'children'>
+>;
+
 export type SetOwnPropsCallback<OwnProps = {}> = (
   state: Partial<OwnProps>
 ) => Partial<OwnProps>;
@@ -42,8 +47,8 @@ export interface BaseComponent<GivenProps = {}, OwnProps = {}> {
     props: GivenProps & Partial<OwnProps>,
     injected: Injected<GivenProps, OwnProps>
   ): Element | ReadonlyArray<Element> | undefined;
-  _type?: string;
   name?: string;
+  _type?: string;
 }
 
 export interface Component<GivenProps = {}, OwnProps = {}>
@@ -53,29 +58,30 @@ export interface Component<GivenProps = {}, OwnProps = {}>
 
 export interface CanvasComponent<GivenProps = {}, OwnProps = {}>
   extends BaseComponent<GivenProps, OwnProps> {
+  name?: string;
   _type: typeof CANVAS_TYPE;
 }
 
-export interface ContextProviderComponent<Context = {}>
-  extends BaseComponent<Context> {
+export interface ContextProviderComponent<Context = {}> {
   (
-    context: Context,
+    context: WithChildren<Context>,
     setContext: (
       contextId: number,
       initialContext: Context,
-      context: Context
+      context: NoChildren<Context>
     ) => void
   ): Element | ReadonlyArray<Element> | undefined;
+  name?: string;
   _type: typeof CONTEXT_PROVIDER_TYPE;
   _contextId: number;
 }
 
-export interface ContextConsumerComponent<Context = {}>
-  extends BaseComponent<ContextConsumerProps<Context>> {
+export interface ContextConsumerComponent<Context = {}> {
   (props: ContextConsumerProps<Context>, context: Context):
     | Element
     | ReadonlyArray<Element>
     | undefined;
+  name?: string;
   _type: typeof CONTEXT_CONSUMER_TYPE;
   _contextId: number;
 }
@@ -129,5 +135,5 @@ export type ContextConsumerChild<Context = {}> = (
 ) => Element | ReadonlyArray<Element> | undefined;
 
 export interface ContextConsumerProps<Context = {}> {
-  children?: [ContextConsumerChild<Context> | undefined];
+  children?: [ContextConsumerChild<NoChildren<Context>> | undefined];
 }
