@@ -110,6 +110,8 @@ export function createTreeUtils(
   ): Node<GivenProps, OwnProps> {
     if (next.type === prev.element.type) {
       if (
+        next.type._type === CONTEXT_PROVIDER_TYPE ||
+        next.type._type === CONTEXT_CONSUMER_TYPE ||
         prev.shouldUpdate === true ||
         (typeof prev.shouldUpdate === 'undefined' &&
           shallowCompare(
