@@ -1,6 +1,6 @@
 import Canvasimo from 'canvasimo';
 import { Element, Node } from '../types';
-import { CANVAS_TYPE } from './constants';
+import { CANVAS_TYPE, CONTEXT_CONSUMER_TYPE, CONTEXT_PROVIDER_TYPE } from './constants';
 import { createNode } from './create-node';
 import { destroyTree } from './destroy-tree';
 import { ReRender, TreeUtils } from './types';
@@ -61,16 +61,24 @@ export function createTreeUtils(
       });
     }
 
-    const renderResult = element.type(element.props, node.injected);
+    let rendered: Element | ReadonlyArray<Element> | undefined;
 
-    if (isElementArray(renderResult)) {
-      return renderResult.map(child => {
+    if (element.type._type === CONTEXT_PROVIDER_TYPE) {
+
+    } else if (element.type._type === CONTEXT_CONSUMER_TYPE) {
+
+    } else {
+      rendered = element.type(element.props, node.injected);
+    }
+
+    if (isElementArray(rendered)) {
+      return rendered.map(child => {
         return treeUtils.mountTree(child, (node as unknown) as Node);
       });
     }
 
-    if (renderResult) {
-      return treeUtils.mountTree(renderResult, (node as unknown) as Node);
+    if (rendered) {
+      return treeUtils.mountTree(rendered, (node as unknown) as Node);
     }
 
     return undefined;
@@ -115,10 +123,18 @@ export function createTreeUtils(
           ? [...parentNode.childTransforms]
           : [];
 
-        const rendered = next.type(
-          { ...prev.state, ...next.props },
-          prev.injected
-        );
+        let rendered: Element | ReadonlyArray<Element> | undefined;
+
+        if (next.type._type === CONTEXT_PROVIDER_TYPE) {
+
+        } else if (next.type._type === CONTEXT_CONSUMER_TYPE) {
+
+        } else {
+          rendered = next.type(
+            { ...prev.state, ...next.props },
+            prev.injected
+          );
+        }
 
         const { rendered: prevRendered } = prev;
 
