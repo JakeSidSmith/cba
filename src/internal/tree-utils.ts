@@ -17,8 +17,13 @@ export function createTreeUtils(
   const contexts: Record<string, unknown> = {};
   const treeUtils = {} as TreeUtils;
 
-  const setContext = (contextId: number, context: unknown) => {
+  const setContext = (
+    contextId: number,
+    initialContext: unknown,
+    context: unknown
+  ) => {
     contexts[contextId] = {
+      ...initialContext,
       ...contexts[contextId],
       ...context,
     };

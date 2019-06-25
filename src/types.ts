@@ -60,7 +60,11 @@ export interface ContextProviderComponent<Context = {}>
   extends BaseComponent<Context> {
   (
     context: Context,
-    setContext: (contextId: number, context: Context) => void
+    setContext: (
+      contextId: number,
+      initialContext: Context,
+      context: Context
+    ) => void
   ): Element | ReadonlyArray<Element> | undefined;
   _type: typeof CONTEXT_PROVIDER_TYPE;
   _contextId: number;
