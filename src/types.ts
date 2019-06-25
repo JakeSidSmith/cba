@@ -37,25 +37,27 @@ export interface Injected<GivenProps = {}, OwnProps = {}> {
   ) => void;
 }
 
-export interface ComponentProperties {
+export interface BaseComponent<GivenProps = {}, OwnProps = {}> {
+  (
+    props: GivenProps & Partial<OwnProps>,
+    injected: Injected<GivenProps, OwnProps>
+  ): Element | ReadonlyArray<Element> | undefined;
   _type?: string;
   name?: string;
 }
 
 export interface Component<GivenProps = {}, OwnProps = {}>
-  extends ComponentProperties {
-  (
-    props: GivenProps & Partial<OwnProps>,
-    injected: Injected<GivenProps, OwnProps>
-  ): Element | ReadonlyArray<Element> | undefined;
+  extends BaseComponent<GivenProps, OwnProps> {
+  _type?: never;
 }
 
-export interface CanvasComponent extends Component<CanvasProps> {
+export interface CanvasComponent<GivenProps = {}, OwnProps = {}>
+  extends BaseComponent<GivenProps, OwnProps> {
   _type: typeof CANVAS_TYPE;
 }
 
 export interface ContextProviderComponent<Context = {}>
-  extends Component<Context> {
+  extends BaseComponent<Context> {
   (context: Context, setContext: (context: Context) => void):
     | Element
     | ReadonlyArray<Element>
@@ -65,8 +67,8 @@ export interface ContextProviderComponent<Context = {}>
 }
 
 export interface ContextConsumerComponent<Context = {}>
-  extends Component<ContextConsumerProps<Context>> {
-  (props: ContextConsumerProps<Context>, getContext: () => Context):
+  extends BaseComponent<ContextConsumerProps<Context>> {
+  (props: ContextConsumerProps<Context>, context: Context):
     | Element
     | ReadonlyArray<Element>
     | undefined;
@@ -74,8 +76,14 @@ export interface ContextConsumerComponent<Context = {}>
   _contextId: number;
 }
 
+export type ComponentType<GivenProps = {}, OwnProps = {}> =
+  | Component<GivenProps, OwnProps>
+  | CanvasComponent<GivenProps, OwnProps>
+  | ContextProviderComponent<GivenProps>
+  | ContextConsumerComponent<GivenProps>;
+
 export interface Element<GivenProps = {}, OwnProps = {}> {
-  type: Component<GivenProps, OwnProps>;
+  type: ComponentType<GivenProps, OwnProps>;
   props: WithChildren<GivenProps & Partial<OwnProps>>;
 }
 

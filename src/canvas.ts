@@ -1,7 +1,7 @@
 import { CANVAS_TYPE } from './internal/constants';
-import { CanvasComponent } from './types';
+import { CanvasComponent, CanvasProps } from './types';
 
-const Canvas: CanvasComponent = (
+const Canvas: CanvasComponent<CanvasProps> = (
   { width, height, density, children },
   { canvas }
 ) => {
