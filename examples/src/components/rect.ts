@@ -6,9 +6,10 @@ export interface RectProps {
   width: number;
   height: number;
   fill: string;
+  children?: Element;
 }
 
-const Rect: Component<RectProps, {}, Element> = (
+const Rect: Component<RectProps, {}> = (
   { x, y, width, height, fill, children },
   { canvas }
 ) => {

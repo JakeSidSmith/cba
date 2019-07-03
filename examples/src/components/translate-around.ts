@@ -5,9 +5,10 @@ export interface TranslateAroundProps {
   x: number;
   y: number;
   rotation: number;
+  children?: Element;
 }
 
-const TranslateAround: Component<TranslateAroundProps, {}, Element> = (
+const TranslateAround: Component<TranslateAroundProps, {}> = (
   { x, y, rotation, children },
   { addChildTransform }
 ) => {

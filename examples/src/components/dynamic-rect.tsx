@@ -1,11 +1,12 @@
 /* @jsx cba.createElement */
 
-import cba, { Component } from 'cba';
+import cba, { Component, Element } from 'cba';
 import { Rect, RectProps } from './rect';
 import { TranslateAround } from './translate-around';
 
 interface DynamicRectState {
   rotation: number;
+  children?: Element;
 }
 
 const DynamicRect: Component<RectProps, DynamicRectState> = (
