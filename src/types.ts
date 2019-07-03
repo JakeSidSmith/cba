@@ -65,11 +65,13 @@ export interface CanvasComponent<GivenProps = {}, OwnProps = {}>
 export interface ContextProviderComponent<Context = {}> {
   (
     context: WithChildren<Context>,
-    setContext: (
-      contextId: number,
-      initialContext: Context,
-      context: NoChildren<Context>
-    ) => void
+    injected: {
+      setContext: (
+        contextId: number,
+        initialContext: Context,
+        context: NoChildren<Context>
+      ) => void;
+    }
   ): Element | ReadonlyArray<Element> | undefined;
   name?: string;
   _type: typeof CONTEXT_PROVIDER_TYPE;
@@ -77,7 +79,7 @@ export interface ContextProviderComponent<Context = {}> {
 }
 
 export interface ContextConsumerComponent<Context = {}> {
-  (props: ContextConsumerProps<Context>, context: Context):
+  (props: ContextConsumerProps<Context>, injected: { context: Context }):
     | Element
     | ReadonlyArray<Element>
     | undefined;

@@ -81,11 +81,11 @@ export function createTreeUtils(
     let rendered: Element | ReadonlyArray<Element> | undefined;
 
     if (element.type._type === CONTEXT_PROVIDER_TYPE) {
-      rendered = element.type(element.props, setContext);
+      rendered = element.type(element.props, { setContext });
     } else if (element.type._type === CONTEXT_CONSUMER_TYPE) {
-      rendered = element.type(element.props, contexts[
-        element.type._contextId
-      ] as GivenProps);
+      const context = contexts[element.type._contextId] as GivenProps;
+
+      rendered = element.type(element.props, { context });
     } else {
       rendered = element.type(element.props, node.injected);
     }
@@ -147,11 +147,11 @@ export function createTreeUtils(
         let rendered: Element | ReadonlyArray<Element> | undefined;
 
         if (next.type._type === CONTEXT_PROVIDER_TYPE) {
-          rendered = next.type(next.props, setContext);
+          rendered = next.type(next.props, { setContext });
         } else if (next.type._type === CONTEXT_CONSUMER_TYPE) {
-          rendered = next.type(next.props, contexts[
-            next.type._contextId
-          ] as GivenProps);
+          const context = contexts[next.type._contextId] as GivenProps;
+
+          rendered = next.type(next.props, { context });
         } else {
           rendered = next.type({ ...prev.state, ...next.props }, prev.injected);
         }

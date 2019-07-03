@@ -11,7 +11,7 @@ const createContext = <Context = {}>(initialContext: Context) => {
 
   const ContextProvider: ContextProviderComponent<Context> = (
     { children, ...props },
-    setContext
+    { setContext }
   ) => {
     setContext(contextId, initialContext, props);
 
@@ -23,7 +23,7 @@ const createContext = <Context = {}>(initialContext: Context) => {
 
   const ContextConsumer: ContextConsumerComponent<Context> = (
     { children },
-    context
+    { context }
   ) => {
     if (Array.isArray(children) && typeof children[0] === 'function') {
       return children[0](context);

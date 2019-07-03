@@ -2,9 +2,14 @@ import Canvasimo from 'canvasimo';
 import { Element, Node } from '../types';
 import { ReRender } from './types';
 
-export function createNode<GivenProps = {}, OwnProps = {}>(
+export function createNode<
+  GivenProps = {},
+  OwnProps = {},
+  ParentGivenProps = {},
+  ParentOwnProps = {}
+>(
   element: Element<GivenProps, OwnProps>,
-  parentNode: Node | undefined,
+  parentNode: Node<ParentGivenProps, ParentOwnProps> | undefined,
   canvas: Canvasimo,
   reRender: ReRender
 ) {
