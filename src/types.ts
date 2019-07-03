@@ -35,7 +35,7 @@ export interface Injected<GivenProps = {}, OwnProps = {}> {
   canvas: Canvasimo;
   setOwnProps: SetOwnProps<OwnProps>;
   onCreate: (callback: OnCreateCallback) => void;
-  onUpdate: (callback: OnUpdateCallback<GivenProps, OwnProps>) => void;
+  onUpdate: (callback: OnUpdateCallback<GivenProps, Partial<OwnProps>>) => void;
   addChildTransform: (callback: ChildTransform) => void;
   shouldUpdate: (
     callback: ShouldUpdateCallback<GivenProps, OwnProps> | boolean
