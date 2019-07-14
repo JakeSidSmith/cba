@@ -4,6 +4,7 @@ describe('cba', () => {
   const exportedFunctions = [
     'Canvas',
     'connect',
+    'createContext',
     'createElement',
     'createStore',
     'render',
